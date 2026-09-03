@@ -1,7 +1,7 @@
 ﻿"""
 RetailPulse Forecast - Enterprise Decision-Support Dashboard
-Streamlit business analytics interface for multi-echelon sales forecasting,
-inventory safety-stock planning, model benchmarking, and promotion sensitivity simulation.
+Professional retail business analytics application for demand forecasting,
+model evaluation, inventory buffer planning, and scenario simulation.
 """
 
 import os
@@ -11,189 +11,198 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 
-# Set page configuration with professional metadata
+# 1. Page Configuration
 st.set_page_config(
-    page_title="RetailPulse Forecast | Enterprise Demand Intelligence",
-    page_icon="📈",
+    page_title="RetailPulse Forecast | Demand Analytics",
+    page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom Enterprise Light Theme CSS
-CUSTOM_CSS = """
+# 2. Professional Light Business Theme CSS
+LIGHT_THEME_CSS = """
 <style>
-    /* Global typography & clean background */
+    /* Global Reset & Clean Business Typography */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     
     html, body, [class*="css"] {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         color: #1e293b;
     }
     
     .stApp {
-        background-color: #f8fafc;
+        background-color: #f8f9fa;
     }
     
-    /* Header styling */
-    .main-header {
-        padding: 0.8rem 0 1.2rem 0;
+    /* Top Header Section */
+    .dashboard-header {
+        padding: 0.5rem 0 1rem 0;
         border-bottom: 1px solid #e2e8f0;
-        margin-bottom: 1.2rem;
+        margin-bottom: 1.25rem;
     }
     
-    .main-title {
-        font-size: 1.75rem;
+    .dashboard-title {
+        font-size: 1.5rem;
         font-weight: 700;
         color: #0f172a;
-        letter-spacing: -0.02em;
         margin: 0;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        letter-spacing: -0.01em;
     }
     
-    .main-subtitle {
-        font-size: 0.95rem;
+    .dashboard-subtitle {
+        font-size: 0.875rem;
         color: #64748b;
-        margin-top: 0.25rem;
+        margin-top: 0.2rem;
         margin-bottom: 0;
     }
     
-    /* KPI Card styling */
-    .kpi-container {
+    /* KPI Cards Grid */
+    .kpi-row {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 1rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.25rem;
     }
     
-    .kpi-card {
-        background: #ffffff;
+    .kpi-box {
+        background-color: #ffffff;
         border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 1rem 1.2rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-        border-top: 3px solid #0f766e;
+        border-radius: 6px;
+        padding: 0.9rem 1.1rem;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     }
     
-    .kpi-card.amber {
-        border-top-color: #d97706;
-    }
-    
-    .kpi-card.teal {
-        border-top-color: #0f766e;
-    }
-    
-    .kpi-card.blue {
-        border-top-color: #2563eb;
-    }
-    
-    .kpi-card.slate {
-        border-top-color: #475569;
-    }
-    
-    .kpi-label {
-        font-size: 0.8rem;
+    .kpi-title {
+        font-size: 0.75rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.04em;
         color: #64748b;
-        margin-bottom: 0.35rem;
+        margin-bottom: 0.3rem;
     }
     
-    .kpi-value {
-        font-size: 1.6rem;
+    .kpi-num {
+        font-size: 1.45rem;
         font-weight: 700;
         color: #0f172a;
         line-height: 1.2;
     }
     
-    .kpi-delta {
-        font-size: 0.82rem;
-        font-weight: 600;
-        margin-top: 0.35rem;
+    .kpi-sub {
+        font-size: 0.8rem;
+        font-weight: 500;
+        margin-top: 0.3rem;
     }
     
-    .kpi-delta.positive {
-        color: #0d9488;
+    .kpi-sub.positive {
+        color: #166534;
     }
     
-    .kpi-delta.neutral {
+    .kpi-sub.muted {
         color: #64748b;
     }
     
-    /* Section containers */
-    .content-box {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 1.2rem;
-        margin-bottom: 1.2rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    .kpi-sub.alert {
+        color: #c2410c;
     }
     
-    .section-heading {
-        font-size: 1.15rem;
+    /* Section Headers */
+    .section-title {
+        font-size: 1.05rem;
         font-weight: 600;
-        color: #1e293b;
-        margin-bottom: 0.8rem;
+        color: #0f172a;
+        margin: 0.5rem 0 0.75rem 0;
     }
     
-    /* Sidebar customization */
+    /* Sidebar Clean Styling */
     [data-testid="stSidebar"] {
         background-color: #ffffff;
         border-right: 1px solid #e2e8f0;
     }
     
-    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] h2 {
-        font-size: 1.1rem;
+    .sidebar-header {
+        font-size: 0.95rem;
         font-weight: 700;
         color: #0f172a;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.4rem;
         border-bottom: 1px solid #f1f5f9;
-        padding-bottom: 0.5rem;
     }
     
-    /* Tabs styling */
+    .sidebar-info-card {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 0.75rem 0.9rem;
+        font-size: 0.825rem;
+        color: #475569;
+        margin-top: 1rem;
+    }
+    
+    /* Tabs Navigation */
     .stTabs [data-baseweb="tab-list"] {
         gap: 0.5rem;
         border-bottom: 1px solid #e2e8f0;
     }
     
     .stTabs [data-baseweb="tab"] {
-        padding: 0.6rem 1.2rem;
+        padding: 0.5rem 1rem;
         font-weight: 600;
+        font-size: 0.875rem;
         color: #64748b;
-        border-radius: 6px 6px 0 0;
+        border-radius: 4px 4px 0 0;
+        border-bottom: 2px solid transparent;
     }
     
     .stTabs [aria-selected="true"] {
         color: #0f766e !important;
-        border-bottom: 2px solid #0f766e !important;
+        border-bottom-color: #0f766e !important;
         background-color: transparent !important;
     }
     
-    /* Simulator result banner */
-    .sim-banner {
+    /* Simulator Summary Banner */
+    .simulator-result-box {
         background-color: #f0fdfa;
         border: 1px solid #ccfbf1;
         border-left: 4px solid #0f766e;
         border-radius: 6px;
-        padding: 1rem 1.2rem;
-        margin-top: 1rem;
+        padding: 0.9rem 1.2rem;
+        margin: 0.75rem 0 1rem 0;
+    }
+    
+    .sim-result-title {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #0f766e;
+    }
+    
+    .sim-result-value {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0.15rem 0;
+    }
+    
+    .sim-result-desc {
+        font-size: 0.85rem;
+        color: #475569;
     }
 </style>
 """
-st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
+st.markdown(LIGHT_THEME_CSS, unsafe_allow_html=True)
 
-# File Paths
+# 3. Data Ingestion & Paths
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA_PATH = os.path.join(BASE_DIR, "data", "retail_store_sales.csv")
-MODEL_PATH = os.path.join(BASE_DIR, "models", "best_forecasting_model.pkl")
 METRICS_PATH = os.path.join(BASE_DIR, "outputs", "metrics", "test_model_evaluation.csv")
 VAL_METRICS_PATH = os.path.join(BASE_DIR, "outputs", "metrics", "validation_model_comparison.csv")
 
 @st.cache_data
-def load_dataset():
+def load_data():
     if os.path.exists(DATA_PATH):
         df = pd.read_csv(DATA_PATH)
         df["Date"] = pd.to_datetime(df["Date"])
@@ -201,176 +210,186 @@ def load_dataset():
     return None
 
 @st.cache_data
-def load_metrics_data():
-    metrics_file = METRICS_PATH if os.path.exists(METRICS_PATH) else (VAL_METRICS_PATH if os.path.exists(VAL_METRICS_PATH) else None)
-    if metrics_file and os.path.exists(metrics_file):
-        return pd.read_csv(metrics_file)
+def load_benchmarks():
+    target_path = METRICS_PATH if os.path.exists(METRICS_PATH) else (VAL_METRICS_PATH if os.path.exists(VAL_METRICS_PATH) else None)
+    if target_path and os.path.exists(target_path):
+        return pd.read_csv(target_path)
     return None
 
-df = load_dataset()
-metrics_df = load_metrics_data()
+df = load_data()
+benchmarks_df = load_benchmarks()
 
-# Plotly default configuration for interactive toolbars
+# Plotly configuration for interactive toolbar functionality
 PLOTLY_CONFIG = {
     "displayModeBar": True,
     "displaylogo": False,
     "modeBarButtonsToAdd": ["drawline", "drawopenpath", "eraseshape"],
     "toImageButtonOptions": {
         "format": "png",
-        "filename": "retailpulse_chart",
-        "height": 520,
-        "width": 960,
+        "filename": "retailpulse_analytics_chart",
+        "height": 480,
+        "width": 920,
         "scale": 2
     }
 }
 
-# Header Banner
+# 4. Page Header
 st.markdown("""
-<div class="main-header">
-    <h1 class="main-title">RetailPulse Forecast</h1>
-    <p class="main-subtitle">Enterprise Demand Planning, Inventory Safety Stock & Promotion Sensitivity Intelligence</p>
+<div class="dashboard-header">
+    <h1 class="dashboard-title">RetailPulse Forecast</h1>
+    <p class="dashboard-subtitle">Sales Demand Forecasting, Inventory Safety Stock & Promotional Sensitivity Planning</p>
 </div>
 """, unsafe_allow_html=True)
 
-# Sidebar Controls
-st.sidebar.markdown("## Scope & Filter Controls")
+# 5. Sidebar Scope Filters
+st.sidebar.markdown('<div class="sidebar-header">Filters & Selection</div>', unsafe_allow_html=True)
+
 if df is not None:
     stores = sorted(df["Store_ID"].unique())
-    selected_store = st.sidebar.selectbox("Store Location", stores, index=0, format_func=lambda s: f"Store {s} (Flagship)" if s == 1 else f"Store {s}")
+    selected_store = st.sidebar.selectbox("Store Location", stores, index=0, format_func=lambda s: f"Store {s}")
     
-    depts = sorted(df[df["Store_ID"] == selected_store]["Dept_Name"].unique())
-    selected_dept = st.sidebar.selectbox("Merchandise Department", depts, index=0)
+    dept_options = sorted(df[df["Store_ID"] == selected_store]["Dept_Name"].unique())
+    selected_dept = st.sidebar.selectbox("Department", dept_options, index=0)
     
-    # Filter dataset for selected series
+    # Filter dataset for selected time series
     filtered_df = df[(df["Store_ID"] == selected_store) & (df["Dept_Name"] == selected_dept)].copy().sort_values("Date").reset_index(drop=True)
     
-    st.sidebar.markdown("---")
     st.sidebar.markdown(f"""
-    **Active Series Summary:**
-    - **Store ID:** {selected_store}
-    - **Department:** {selected_dept}
-    - **Date Range:** {filtered_df['Date'].min().strftime('%b %Y')} – {filtered_df['Date'].max().strftime('%b %Y')}
-    - **Observations:** {len(filtered_df)} weekly records
-    """)
+    <div class="sidebar-info-card">
+        <b>Active Filter Summary</b><br>
+        • <b>Store:</b> Store {selected_store}<br>
+        • <b>Department:</b> {selected_dept}<br>
+        • <b>Date Span:</b> {filtered_df['Date'].min().strftime('%b %Y')} – {filtered_df['Date'].max().strftime('%b %Y')}<br>
+        • <b>Total Samples:</b> {len(filtered_df)} weekly records
+    </div>
+    """, unsafe_allow_html=True)
 
-    # 1. Historical Performance KPI Cards
+    # 6. Four Compact KPI Cards
     avg_sales = float(filtered_df["Weekly_Sales"].mean())
     max_sales = float(filtered_df["Weekly_Sales"].max())
-    holiday_sales = filtered_df[filtered_df["IsHoliday"] == 1]["Weekly_Sales"]
-    holiday_avg = float(holiday_sales.mean()) if len(holiday_sales) > 0 else avg_sales
-    promo_sales = filtered_df[filtered_df["Promotional_Flag"] == 1]["Weekly_Sales"]
-    promo_avg = float(promo_sales.mean()) if len(promo_sales) > 0 else avg_sales
+    holiday_sub = filtered_df[filtered_df["IsHoliday"] == 1]["Weekly_Sales"]
+    holiday_avg = float(holiday_sub.mean()) if len(holiday_sub) > 0 else avg_sales
+    promo_sub = filtered_df[filtered_df["Promotional_Flag"] == 1]["Weekly_Sales"]
+    promo_avg = float(promo_sub.mean()) if len(promo_sub) > 0 else avg_sales
     
     holiday_lift_pct = ((holiday_avg - avg_sales) / avg_sales) * 100
     promo_lift_pct = ((promo_avg - avg_sales) / avg_sales) * 100
     
     st.markdown(f"""
-    <div class="kpi-container">
-        <div class="kpi-card teal">
-            <div class="kpi-label">Average Weekly Sales</div>
-            <div class="kpi-value">${avg_sales:,.0f}</div>
-            <div class="kpi-delta neutral">Base baseline volume</div>
+    <div class="kpi-row">
+        <div class="kpi-box">
+            <div class="kpi-title">Average Weekly Sales</div>
+            <div class="kpi-num">${avg_sales:,.0f}</div>
+            <div class="kpi-sub muted">Historical mean volume</div>
         </div>
-        <div class="kpi-card blue">
-            <div class="kpi-label">Peak Weekly Sales</div>
-            <div class="kpi-value">${max_sales:,.0f}</div>
-            <div class="kpi-delta neutral">Historical maximum</div>
+        <div class="kpi-box">
+            <div class="kpi-title">Peak Weekly Sales</div>
+            <div class="kpi-num">${max_sales:,.0f}</div>
+            <div class="kpi-sub muted">Recorded series maximum</div>
         </div>
-        <div class="kpi-card amber">
-            <div class="kpi-label">Holiday Week Average</div>
-            <div class="kpi-value">${holiday_avg:,.0f}</div>
-            <div class="kpi-delta positive">+{holiday_lift_pct:.1f}% vs baseline</div>
+        <div class="kpi-box">
+            <div class="kpi-title">Holiday Week Avg</div>
+            <div class="kpi-num">${holiday_avg:,.0f}</div>
+            <div class="kpi-sub positive">+{holiday_lift_pct:.1f}% vs baseline</div>
         </div>
-        <div class="kpi-card slate">
-            <div class="kpi-label">Promotional Campaign Lift</div>
-            <div class="kpi-value">${promo_avg:,.0f}</div>
-            <div class="kpi-delta positive">+{promo_lift_pct:.1f}% uplift</div>
+        <div class="kpi-box">
+            <div class="kpi-title">Promotional Week Avg</div>
+            <div class="kpi-num">${promo_avg:,.0f}</div>
+            <div class="kpi-sub positive">+{promo_lift_pct:.1f}% uplift</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # 2. Interactive Time-Series Chart
-    st.markdown('<div class="section-heading">Weekly Demand Trajectory & Seasonal Surges</div>', unsafe_allow_html=True)
+    # 7. Weekly Demand Trajectory Plot
+    st.markdown('<div class="section-title">Weekly Demand Trajectory</div>', unsafe_allow_html=True)
     
-    fig_ts = go.Figure()
+    fig_line = go.Figure()
     
-    # Primary weekly sales line
-    fig_ts.add_trace(go.Scatter(
+    # Weekly Sales
+    fig_line.add_trace(go.Scatter(
         x=filtered_df["Date"],
         y=filtered_df["Weekly_Sales"],
         mode="lines",
-        name="Weekly Sales ($)",
-        line=dict(color="#0f766e", width=2.2),
+        name="Weekly Sales",
+        line=dict(color="#0f766e", width=2.0),
         hovertemplate="<b>Date:</b> %{x|%Y-%m-%d}<br><b>Sales:</b> $%{y:,.2f}<extra></extra>"
     ))
     
-    # Rolling 4-week moving average
+    # 4-Week Moving Average Trendline
     filtered_df["SMA_4W"] = filtered_df["Weekly_Sales"].rolling(4, min_periods=1).mean()
-    fig_ts.add_trace(go.Scatter(
+    fig_line.add_trace(go.Scatter(
         x=filtered_df["Date"],
         y=filtered_df["SMA_4W"],
         mode="lines",
-        name="4-Week Moving Avg",
+        name="4-Week Moving Average",
         line=dict(color="#64748b", width=1.5, dash="dot"),
-        hovertemplate="<b>4W Trend:</b> $%{y:,.2f}<extra></extra>"
+        hovertemplate="<b>4W Moving Avg:</b> $%{y:,.2f}<extra></extra>"
     ))
     
-    # Overlay Holiday Points
-    holiday_pts = filtered_df[filtered_df["IsHoliday"] == 1]
-    if not holiday_pts.empty:
-        fig_ts.add_trace(go.Scatter(
-            x=holiday_pts["Date"],
-            y=holiday_pts["Weekly_Sales"],
+    # Holiday points overlay
+    holiday_events = filtered_df[filtered_df["IsHoliday"] == 1]
+    if not holiday_events.empty:
+        fig_line.add_trace(go.Scatter(
+            x=holiday_events["Date"],
+            y=holiday_events["Weekly_Sales"],
             mode="markers",
-            name="Holiday Event",
-            marker=dict(color="#d97706", size=8, symbol="diamond", line=dict(color="#ffffff", width=1)),
-            hovertemplate="<b>Holiday Surge:</b> $%{y:,.2f}<br><b>Date:</b> %{x|%Y-%m-%d}<extra></extra>"
+            name="Holiday Surge",
+            marker=dict(color="#c2410c", size=7, symbol="diamond", line=dict(color="#ffffff", width=0.8)),
+            hovertemplate="<b>Holiday Event:</b> $%{y:,.2f}<br><b>Date:</b> %{x|%Y-%m-%d}<extra></extra>"
         ))
         
-    fig_ts.update_layout(
+    fig_line.update_layout(
         template="plotly_white",
-        margin=dict(l=50, r=30, t=20, b=40),
-        height=380,
+        paper_bgcolor="#ffffff",
+        plot_bgcolor="#ffffff",
+        height=360,
+        margin=dict(l=45, r=25, t=15, b=35),
         hovermode="x unified",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+            font=dict(size=11, color="#475569")
+        ),
         xaxis=dict(
             title="",
             showgrid=True,
             gridcolor="#f1f5f9",
-            linecolor="#cbd5e1"
+            linecolor="#e2e8f0"
         ),
         yaxis=dict(
-            title="Weekly Sales ($ USD)",
+            title="Sales ($ USD)",
             showgrid=True,
             gridcolor="#f1f5f9",
-            linecolor="#cbd5e1",
+            linecolor="#e2e8f0",
             tickprefix="$",
             tickformat=","
         )
     )
-    st.plotly_chart(fig_ts, use_container_width=True, config=PLOTLY_CONFIG)
+    st.plotly_chart(fig_line, use_container_width=True, config=PLOTLY_CONFIG)
 
-    # 3. Decision-Support Analytics Tabs
+    # 8. Business Analytics Tabs
     st.markdown("<br>", unsafe_allow_html=True)
     tab1, tab2, tab3 = st.tabs([
-        "Model Benchmarks & Selection",
-        "What-If Demand Simulator",
-        "Inventory Buffer & Reorder Point"
+        "Model Performance",
+        "Demand Simulator",
+        "Inventory Planning"
     ])
     
-    # TAB 1: MODEL BENCHMARKS
+    # TAB 1: MODEL PERFORMANCE
     with tab1:
-        st.markdown('<div class="section-heading">Empirical Model Benchmarking & Accuracy Comparison</div>', unsafe_allow_html=True)
-        st.markdown("All candidate models are evaluated using rigorous out-of-time chronological validation. Lower WAPE (%) indicates superior forecasting precision.")
+        st.markdown('<div class="section-title">Model Evaluation & Error Benchmarks</div>', unsafe_allow_html=True)
+        st.markdown("<span style='font-size: 0.85rem; color: #64748b;'>Benchmarked on out-of-time chronological validation data. Lower WAPE (%) and RMSE indicate superior predictive accuracy.</span>", unsafe_allow_html=True)
         
-        if metrics_df is not None:
-            col_tbl, col_chart = st.columns([5, 5])
+        if benchmarks_df is not None:
+            col_t, col_c = st.columns([5, 5])
             
-            with col_tbl:
-                # Format dataframe for clean display
-                display_metrics = metrics_df.copy()
+            with col_t:
+                disp_df = benchmarks_df.copy()
                 st.dataframe(
-                    display_metrics.style.format({
+                    disp_df.style.format({
                         "MAE ($)": "${:,.2f}",
                         "RMSE ($)": "${:,.2f}",
                         "MAPE (%)": "{:.2f}%",
@@ -381,165 +400,169 @@ if df is not None:
                     height=280
                 )
                 
-            with col_chart:
-                fig_bar = px.bar(
-                    metrics_df.sort_values(by="WAPE (%)", ascending=True),
+            with col_c:
+                fig_perf = px.bar(
+                    benchmarks_df.sort_values(by="WAPE (%)", ascending=True),
                     x="Model",
                     y="WAPE (%)",
                     color="WAPE (%)",
-                    color_continuous_scale=["#0f766e", "#38bdf8", "#94a3b8", "#f59e0b", "#ef4444"],
-                    title="Weighted Absolute Percentage Error (WAPE % - Lower is Better)"
+                    color_continuous_scale=["#0f766e", "#0284c7", "#94a3b8", "#d97706", "#dc2626"],
+                    title="Model Accuracy Comparison (WAPE % — Lower is Better)"
                 )
-                fig_bar.update_layout(
+                fig_perf.update_layout(
                     template="plotly_white",
-                    margin=dict(l=40, r=20, t=40, b=40),
+                    paper_bgcolor="#ffffff",
+                    plot_bgcolor="#ffffff",
                     height=280,
-                    xaxis=dict(title="", tickangle=-25),
+                    margin=dict(l=35, r=15, t=35, b=35),
+                    xaxis=dict(title="", tickangle=-20),
                     yaxis=dict(title="WAPE (%)", showgrid=True, gridcolor="#f1f5f9"),
                     coloraxis_showscale=False
                 )
-                st.plotly_chart(fig_bar, use_container_width=True, config=PLOTLY_CONFIG)
+                st.plotly_chart(fig_perf, use_container_width=True, config=PLOTLY_CONFIG)
         else:
-            st.info("Metrics comparison table not found. Run pipeline.py to generate benchmark results.")
+            st.info("Benchmark metrics not found. Run pipeline.py to generate evaluation outputs.")
 
-    # TAB 2: WHAT-IF DEMAND SIMULATOR
+    # TAB 2: DEMAND SIMULATOR
     with tab2:
-        st.markdown('<div class="section-heading">Scenario Simulation & Promotional Sensitivity</div>', unsafe_allow_html=True)
-        st.markdown("Simulate next-week store-department demand based on active promotional campaigns, markdown budget allocations, and calendar events.")
+        st.markdown('<div class="section-title">Scenario Simulation & Promotional Sensitivity</div>', unsafe_allow_html=True)
+        st.markdown("<span style='font-size: 0.85rem; color: #64748b;'>Simulate next-week department demand based on promotional spend, markdown allocation, and market growth.</span>", unsafe_allow_html=True)
         
-        sim_c1, sim_c2 = st.columns(2)
-        with sim_c1:
-            promo_choice = st.selectbox("Promotional Campaign Status", ["Active Campaign", "Standard Operations"], index=0)
-            markdown_budget = st.slider("Markdown Discount Allocation ($)", min_value=0, max_value=5000, value=1200, step=200)
+        s1, s2 = st.columns(2)
+        with s1:
+            sim_promo = st.selectbox("Promotional Campaign Status", ["Active Campaign", "Standard Operations"], index=0)
+            sim_markdown = st.slider("Markdown Discount Allocation ($)", min_value=0, max_value=5000, value=1200, step=200)
             
-        with sim_c2:
-            holiday_choice = st.selectbox("Calendar Holiday Status", ["Regular Week", "Major Holiday Peak"], index=0)
-            macro_growth = st.slider("Macroeconomic / Market Trend (%)", min_value=-10.0, max_value=20.0, value=3.0, step=0.5)
+        with s2:
+            sim_holiday = st.selectbox("Calendar Holiday Status", ["Regular Week", "Major Holiday Peak"], index=0)
+            sim_growth = st.slider("Market / Macroeconomic Growth Trend (%)", min_value=-10.0, max_value=20.0, value=3.0, step=0.5)
             
-        # Calculation logic
-        base_demand = float(filtered_df["Weekly_Sales"].tail(4).mean())
+        base_weekly = float(filtered_df["Weekly_Sales"].tail(4).mean())
         
-        promo_factor = 0.22 if promo_choice == "Active Campaign" else 0.0
-        holiday_factor = 0.45 if holiday_choice == "Major Holiday Peak" else 0.0
-        markdown_factor = (markdown_budget / 25000.0)
-        growth_factor = (macro_growth / 100.0)
+        factor_promo = 0.22 if sim_promo == "Active Campaign" else 0.0
+        factor_holiday = 0.45 if sim_holiday == "Major Holiday Peak" else 0.0
+        factor_markdown = (sim_markdown / 25000.0)
+        factor_growth = (sim_growth / 100.0)
         
-        total_multiplier = 1.0 + promo_factor + holiday_factor + markdown_factor + growth_factor
-        simulated_sales = base_demand * total_multiplier
-        net_uplift = simulated_sales - base_demand
+        multiplier = 1.0 + factor_promo + factor_holiday + factor_markdown + factor_growth
+        forecast_val = base_weekly * multiplier
+        net_diff = forecast_val - base_weekly
         
         st.markdown(f"""
-        <div class="sim-banner">
-            <div style="font-size: 0.85rem; font-weight: 600; color: #0f766e; text-transform: uppercase;">Simulated Forecast Output</div>
-            <div style="font-size: 1.8rem; font-weight: 700; color: #0f172a; margin-top: 0.2rem;">${simulated_sales:,.2f}</div>
-            <div style="font-size: 0.9rem; color: #475569; margin-top: 0.35rem;">
-                Baseline (4W Avg): <b>${base_demand:,.2f}</b> | Net Projected Uplift: <b>+${net_uplift:,.2f}</b> ({((total_multiplier-1)*100):+.1f}%)
+        <div class="simulator-result-box">
+            <div class="sim-result-title">Projected Next-Week Demand</div>
+            <div class="sim-result-value">${forecast_val:,.2f}</div>
+            <div class="sim-result-desc">
+                Baseline (4W Average): <b>${base_weekly:,.2f}</b> | Net Projected Uplift: <b>+${net_diff:,.2f}</b> ({((multiplier-1)*100):+.1f}%)
             </div>
         </div>
         """, unsafe_allow_html=True)
         
-        # Breakdown chart
-        breakdown_df = pd.DataFrame({
-            "Component": ["Base 4W Demand", "Promotional Lift", "Holiday Impact", "Markdown Sensitivity", "Market Trend"],
-            "Value ($)": [
-                base_demand,
-                base_demand * promo_factor,
-                base_demand * holiday_factor,
-                base_demand * markdown_factor,
-                base_demand * growth_factor
+        comp_df = pd.DataFrame({
+            "Component": ["Base 4W Demand", "Promotional Uplift", "Holiday Impact", "Markdown Sensitivity", "Market Trend"],
+            "Amount ($)": [
+                base_weekly,
+                base_weekly * factor_promo,
+                base_weekly * factor_holiday,
+                base_weekly * factor_markdown,
+                base_weekly * factor_growth
             ]
         })
-        fig_breakdown = px.bar(
-            breakdown_df,
+        
+        fig_comp = px.bar(
+            comp_df,
             x="Component",
-            y="Value ($)",
-            text="Value ($)",
+            y="Amount ($)",
+            text="Amount ($)",
             color="Component",
-            color_discrete_sequence=["#0f766e", "#38bdf8", "#d97706", "#64748b", "#0284c7"],
-            title="Projected Demand Contribution Breakdown"
+            color_discrete_sequence=["#0f766e", "#0284c7", "#c2410c", "#64748b", "#059669"],
+            title="Demand Contribution Breakdown by Factor"
         )
-        fig_breakdown.update_traces(texttemplate="$%{text:,.0f}", textposition="outside")
-        fig_breakdown.update_layout(
+        fig_comp.update_traces(texttemplate="$%{text:,.0f}", textposition="outside")
+        fig_comp.update_layout(
             template="plotly_white",
+            paper_bgcolor="#ffffff",
+            plot_bgcolor="#ffffff",
             height=280,
-            margin=dict(l=40, r=20, t=40, b=40),
+            margin=dict(l=35, r=15, t=35, b=35),
             showlegend=False,
             yaxis=dict(showgrid=True, gridcolor="#f1f5f9", tickprefix="$")
         )
-        st.plotly_chart(fig_breakdown, use_container_width=True, config=PLOTLY_CONFIG)
+        st.plotly_chart(fig_comp, use_container_width=True, config=PLOTLY_CONFIG)
 
-    # TAB 3: REORDER & SAFETY STOCK
+    # TAB 3: INVENTORY PLANNING
     with tab3:
-        st.markdown('<div class="section-heading">Lead-Time Safety Stock & Dynamic Reorder Point Policy</div>', unsafe_allow_html=True)
-        st.markdown("Operations research inventory buffer calculation configured for a **95% Service Level Agreement (SLA)** ($Z_{0.95} = 1.645$) across supplier replenishment horizons.")
+        st.markdown('<div class="section-title">Safety Stock & Reorder Point Policy</div>', unsafe_allow_html=True)
+        st.markdown("<span style='font-size: 0.85rem; color: #64748b;'>Calculates required buffer inventory for a <b>95% Service Level Agreement (SLA)</b> ($Z_{0.95} = 1.645$) across supplier replenishment horizons.</span>", unsafe_allow_html=True)
         
-        lead_time = st.slider("Supplier Replenishment Lead Time (Weeks)", min_value=1, max_value=6, value=2, step=1)
+        lead_time_w = st.slider("Supplier Replenishment Lead Time (Weeks)", min_value=1, max_value=6, value=2, step=1)
         
-        # Standard deviation of weekly demand residuals
-        demand_std = float(filtered_df["Weekly_Sales"].std())
-        z_sla = 1.645 # 95% cycle service level
+        st_std = float(filtered_df["Weekly_Sales"].std())
+        z_score = 1.645
         
         # Lead time safety stock: SS = Z * sigma * sqrt(L)
-        safety_stock = z_sla * demand_std * np.sqrt(lead_time)
-        cycle_demand = avg_sales * lead_time
-        reorder_point = cycle_demand + safety_stock
+        ss_dollars = z_score * st_std * np.sqrt(lead_time_w)
+        cycle_req = avg_sales * lead_time_w
+        rop_dollars = cycle_req + ss_dollars
         
-        rc1, rc2, rc3 = st.columns(3)
-        with rc1:
+        ic1, ic2, ic3 = st.columns(3)
+        with ic1:
             st.markdown(f"""
-            <div class="kpi-card slate">
-                <div class="kpi-label">Cycle Demand ({lead_time}W Lead Time)</div>
-                <div class="kpi-value">${cycle_demand:,.0f}</div>
-                <div class="kpi-delta neutral">${avg_sales:,.0f} / week</div>
+            <div class="kpi-box">
+                <div class="kpi-title">Cycle Demand ({lead_time_w}W Lead Time)</div>
+                <div class="kpi-num">${cycle_req:,.0f}</div>
+                <div class="kpi-sub muted">${avg_sales:,.0f} / week</div>
             </div>
             """, unsafe_allow_html=True)
             
-        with rc2:
+        with ic2:
             st.markdown(f"""
-            <div class="kpi-card amber">
-                <div class="kpi-label">Safety Stock Buffer (95% SLA)</div>
-                <div class="kpi-value">${safety_stock:,.0f}</div>
-                <div class="kpi-delta positive">Z = 1.645 · σ · √{lead_time}</div>
+            <div class="kpi-box">
+                <div class="kpi-title">Safety Stock Buffer (95% SLA)</div>
+                <div class="kpi-num">${ss_dollars:,.0f}</div>
+                <div class="kpi-sub alert">Z = 1.645 · σ · √{lead_time_w}</div>
             </div>
             """, unsafe_allow_html=True)
             
-        with rc3:
+        with ic3:
             st.markdown(f"""
-            <div class="kpi-card teal">
-                <div class="kpi-label">Total Reorder Point (ROP)</div>
-                <div class="kpi-value">${reorder_point:,.0f}</div>
-                <div class="kpi-delta positive">Cycle Demand + Buffer</div>
+            <div class="kpi-box">
+                <div class="kpi-title">Total Reorder Point (ROP)</div>
+                <div class="kpi-num">${rop_dollars:,.0f}</div>
+                <div class="kpi-sub positive">Cycle Demand + Buffer</div>
             </div>
             """, unsafe_allow_html=True)
             
-        # Policy Stack Bar
-        fig_inv = go.Figure()
-        fig_inv.add_trace(go.Bar(
+        # Stacked Inventory Composition Bar
+        fig_stack = go.Figure()
+        fig_stack.add_trace(go.Bar(
             name="Cycle Demand",
             x=[f"Store {selected_store} : {selected_dept}"],
-            y=[cycle_demand],
+            y=[cycle_req],
             marker_color="#0f766e",
-            text=[f"${cycle_demand:,.0f}"],
+            text=[f"${cycle_req:,.0f}"],
             textposition="inside"
         ))
-        fig_inv.add_trace(go.Bar(
+        fig_stack.add_trace(go.Bar(
             name="Safety Stock Buffer",
             x=[f"Store {selected_store} : {selected_dept}"],
-            y=[safety_stock],
-            marker_color="#d97706",
-            text=[f"${safety_stock:,.0f}"],
+            y=[ss_dollars],
+            marker_color="#c2410c",
+            text=[f"${ss_dollars:,.0f}"],
             textposition="inside"
         ))
-        fig_inv.update_layout(
+        fig_stack.update_layout(
             barmode="stack",
             template="plotly_white",
+            paper_bgcolor="#ffffff",
+            plot_bgcolor="#ffffff",
             height=260,
-            title=f"Inventory Buffer Composition for Replenishment Horizon (Lead Time = {lead_time} Weeks)",
-            margin=dict(l=40, r=20, t=40, b=40),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            title=f"Inventory Buffer Composition (Lead Time = {lead_time_w} Weeks)",
+            margin=dict(l=35, r=15, t=35, b=35),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=11, color="#475569")),
             yaxis=dict(showgrid=True, gridcolor="#f1f5f9", tickprefix="$", tickformat=",")
         )
-        st.plotly_chart(fig_inv, use_container_width=True, config=PLOTLY_CONFIG)
+        st.plotly_chart(fig_stack, use_container_width=True, config=PLOTLY_CONFIG)
 
 else:
     st.error("Dataset not found at data/retail_store_sales.csv. Please execute the pipeline script first.")
