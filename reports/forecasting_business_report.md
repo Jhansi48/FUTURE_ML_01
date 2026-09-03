@@ -1,13 +1,13 @@
 # RetailPulse Forecast — Sales & Demand Forecasting Executive Report
 
 ## Executive Summary
-This report presents the rigorous empirical validation of the **RetailPulse Forecast** machine learning demand planning engine.
-To adhere strictly to professional time-series standards:
+This report presents the empirical validation of the **RetailPulse Forecast** machine learning demand planning engine.
+The evaluation framework adheres strictly to statistical time-series best practices:
 1. **70% Training Set**: Used strictly to fit model weights.
 2. **15% Validation Set**: Used for candidate model benchmarking and champion selection.
 3. **15% Out-of-Time Test Set**: Reserved for a single, unbiased final evaluation of the selected champion model.
 
-The champion model selected on the validation set is **XGBoost Regressor** (**5.65% Validation WAPE**).
+The champion model selected strictly on validation performance is **XGBoost Regressor** (**5.65% Validation WAPE**).
 On the untouched out-of-time test horizon, **XGBoost Regressor** achieved an unbiased **WAPE of 4.55%** and an **R² score of 0.9928**.
 
 ---
@@ -42,9 +42,20 @@ On the untouched out-of-time test horizon, **XGBoost Regressor** achieved an unb
 
 ---
 
-## 3. Uncertainty Quantification & Inventory Policy
-- **Statistical Prediction Interval**: The forecast band plotted on the test horizon is derived from the empirical validation residual standard error $\sigma_{\text{val}} = \$3,816.87$, constructing a statistically grounded $95\%$ prediction interval ($\hat{y} \pm 1.96 \cdot \sigma_{\text{val}}$).
-- **Safety Stock Formula**: Calculated at a $95\%$ Service Level Agreement ($Z = 1.645$) using residual forecast error standard deviation across a 2-week supplier lead time:
-  $$\text{Safety Stock} = Z_{0.95} \times \text{RMSE}_{\text{residual}} \times \sqrt{L}$$
-- **Reorder Point (ROP)**:
+## 3. Mathematical Formulation of Uncertainty & Inventory Buffer
+
+### A. Aggregate Forecast Prediction Interval
+The plotted demand forecast is an aggregation across all 30 store-department series: $\hat{Y}_{\text{agg}, t} = \sum_{i=1}^{30} \hat{y}_{i, t}$.
+The uncertainty band is computed directly from the empirical sample standard deviation of aggregate weekly forecast residuals measured on the validation set ($\sigma_{\text{agg}, \text{val}} = \$33,820.44$):
+$$\text{Lower Bound} = \max\left(0, \hat{Y}_{\text{agg}, t} - 1.96 \cdot \sigma_{\text{agg}, \text{val}}\right)$$
+$$\text{Upper Bound} = \hat{Y}_{\text{agg}, t} + 1.96 \cdot \sigma_{\text{agg}, \text{val}}$$
+This constitutes an empirical $95\%$ prediction interval under approximately normal aggregate forecast residuals.
+
+### B. Lead-Time Inventory Safety Stock & Reorder Point (ROP)
+Under standard supply chain inventory theory (Silver-Pyke-Peterson inventory model), demand uncertainty accumulates over the replenishment lead time ($L = 2\text{ weeks}$).
+- **$\sigma_{\text{weekly}}$**: Sample standard deviation of weekly forecast errors for each individual department ($USD$).
+- **Lead-Time Uncertainty Scaling**: For independent weekly errors over $L$ weeks, the variance scales as $\text{Var}(\text{Lead Time Error}) = L \cdot \sigma_{\text{weekly}}^2$, so the standard deviation of lead-time demand error is $\sigma_L = \sigma_{\text{weekly}} \cdot \sqrt{L}$.
+- **Safety Stock at 95% Service Level** ($Z_{0.95} = 1.645$):
+  $$\text{Safety Stock} = Z_{0.95} \times \sigma_{\text{weekly}} \times \sqrt{L} = 1.645 \times \sigma_{\text{weekly}} \times \sqrt{2}$$
+- **Dynamic Reorder Point (ROP)**:
   $$\text{ROP} = (\text{Forecasted Weekly Demand} \times L) + \text{Safety Stock}$$

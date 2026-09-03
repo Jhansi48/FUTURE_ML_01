@@ -52,13 +52,13 @@ On the validation selection horizon, **XGBoost Regressor** emerged as the champi
 ┌────────────────────────────────────────────────────────┐
 │       Unbiased Final Evaluation on Untouched Test      │
 │   - Test WAPE: 4.55% | R² Score: 0.9928 | MAE: $1,384   │
-│   - Statistical 95% Prediction Interval (±1.96 σ_val)  │
+│   - Empirical 95% Prediction Interval (±1.96 σ_agg,val)│
 └───────────────────────────┬────────────────────────────┘
                             │
                             ▼
 ┌────────────────────────────────────────────────────────┐
 │      Operational Decision Support & Inventory Policy   │
-│   - Dynamic Safety Stock Buffer (Z_0.95 = 1.645)       │
+│   - Safety Stock = Z_0.95 * sigma_weekly * sqrt(L)     │
 │   - Total Reorder Point (ROP) = (Demand * L) + SS      │
 │   - Interactive Streamlit Demand Simulator             │
 └────────────────────────────────────────────────────────┘
@@ -121,13 +121,23 @@ To guarantee zero future information leakage into historical predictions:
 
 ---
 
-## 🔍 Uncertainty Quantification & Inventory Buffer Policy
-1. **Statistical Prediction Interval**: The forecast band shown on test visual outputs is calculated from validation residual standard error ($\sigma_{\text{val}} = \$3,816.87$), yielding a defensible $95\%$ empirical prediction interval:
-   $$\hat{y} \pm 1.96 \cdot \sigma_{\text{val}} \cdot \sqrt{N_{\text{series}}}$$
-2. **Statistical Safety Stock Calculation**: For a target **95% Service Level Agreement (SLA)** ($Z = 1.645$) across a 2-week supplier lead time ($L = 2$):
-   $$\text{Safety Stock} = Z_{0.95} \times \text{RMSE}_{\text{residual}} \times \sqrt{L}$$
-3. **Dynamic Reorder Point (ROP)**:
-   $$\text{ROP} = (\text{Forecasted Weekly Demand} \times L) + \text{Safety Stock}$$
+## 🔍 Mathematical Formulation of Uncertainty & Inventory Policy
+
+### 1. Aggregate Weekly Prediction Interval
+The plotted demand forecast is aggregated across all 30 store-department series: $\hat{Y}_{\text{agg}, t} = \sum_{i=1}^{30} \hat{y}_{i, t}$.
+The uncertainty band is computed directly from the empirical sample standard deviation of aggregate weekly forecast residuals measured on the validation set ($\sigma_{\text{agg}, \text{val}} = \$33,820.44$):
+$$\text{Lower Bound} = \max\left(0, \hat{Y}_{\text{agg}, t} - 1.96 \cdot \sigma_{\text{agg}, \text{val}}\right)$$
+$$\text{Upper Bound} = \hat{Y}_{\text{agg}, t} + 1.96 \cdot \sigma_{\text{agg}, \text{val}}$$
+This constitutes an empirical $95\%$ prediction interval under approximately normal aggregate forecast residuals.
+
+### 2. Lead-Time Inventory Safety Stock & Reorder Point (ROP)
+Under standard supply chain inventory theory (Silver-Pyke-Peterson inventory model), demand uncertainty accumulates over the replenishment lead time ($L = 2\text{ weeks}$).
+- **$\sigma_{\text{weekly}}$**: Sample standard deviation of weekly forecast errors for each individual department ($USD$).
+- **Lead-Time Uncertainty Scaling**: For independent weekly errors over $L$ weeks, the variance scales as $\text{Var}(\text{Lead Time Error}) = L \cdot \sigma_{\text{weekly}}^2$, so the standard deviation of lead-time demand error is $\sigma_L = \sigma_{\text{weekly}} \cdot \sqrt{L}$.
+- **Safety Stock at 95% Service Level** ($Z_{0.95} = 1.645$):
+  $$\text{Safety Stock} = Z_{0.95} \times \sigma_{\text{weekly}} \times \sqrt{L} = 1.645 \times \sigma_{\text{weekly}} \times \sqrt{2}$$
+- **Dynamic Reorder Point (ROP)**:
+  $$\text{ROP} = (\text{Forecasted Weekly Demand} \times L) + \text{Safety Stock}$$
 
 ---
 

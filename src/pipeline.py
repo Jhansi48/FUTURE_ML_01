@@ -1,9 +1,11 @@
 ﻿"""
 RetailPulse Forecast - End-to-End Training & Rigorous Evaluation Pipeline
-Implements rigorous chronological split methodology:
+Implements mathematically rigorous chronological split methodology:
 - 70% Train: Model training only
 - 15% Validation: Candidate model comparison & champion selection
 - 15% Test: Unbiased out-of-time evaluation of the selected champion
+- Statistically defensible aggregate prediction intervals (±1.96 * sigma_agg_val)
+- Rigorous lead-time inventory safety stock calculation: Z_0.95 * sigma_weekly_error * sqrt(L)
 """
 
 import os
@@ -79,6 +81,7 @@ def run_pipeline():
     print("=" * 75)
     registry = get_model_registry()
     val_records = []
+    val_predictions = {}
     trained_models = {}
     
     for name, model in registry.items():
@@ -88,6 +91,7 @@ def run_pipeline():
         
         # Evaluate on validation set for model selection
         y_val_pred = np.maximum(0, model.predict(X_val))
+        val_predictions[name] = y_val_pred
         val_m = compute_metrics(y_val, y_val_pred)
         val_m["Model"] = name
         val_records.append(val_m)
@@ -100,14 +104,25 @@ def run_pipeline():
     val_df.to_csv(val_metrics_path, index=False)
     print(f"\nValidation comparison table saved to: {val_metrics_path}")
     
-    # Select Champion Model ONLY from Validation WAPE
+    # Select Champion Model ONLY from lowest Validation WAPE
     champion_name = val_df.iloc[0]["Model"]
     champion_val_wape = val_df.iloc[0]["WAPE (%)"]
     champion_val_rmse = val_df.iloc[0]["RMSE ($)"]
     champion_model = trained_models[champion_name]
     
+    # Calculate empirical standard deviation of AGGREGATE weekly validation residuals
+    df_val_eval = df_val.copy()
+    df_val_eval["Predicted_Sales"] = val_predictions[champion_name]
+    val_agg = df_val_eval.groupby("Date").agg({
+        "Weekly_Sales": "sum",
+        "Predicted_Sales": "sum"
+    }).reset_index()
+    val_agg_residuals = val_agg["Weekly_Sales"] - val_agg["Predicted_Sales"]
+    val_agg_residual_std = float(np.std(val_agg_residuals, ddof=1))
+    
     print("\n" + "=" * 75)
     print(f"[CHAMPION MODEL SELECTED]: {champion_name} (Validation WAPE: {champion_val_wape:.2f}%)")
+    print(f"Validation Aggregate Residual Standard Deviation (sigma_agg_val): ${val_agg_residual_std:,.2f}")
     print("=" * 75)
     
     print("\n" + "=" * 75)
@@ -142,7 +157,8 @@ def run_pipeline():
         "feature_cols": feature_cols,
         "model_name": champion_name,
         "val_rmse": champion_val_rmse,
-        "val_wape": champion_val_wape
+        "val_wape": champion_val_wape,
+        "val_agg_residual_std": val_agg_residual_std
     }, champion_save_path)
     print(f"\nChampion model serialized to: {champion_save_path}")
     
@@ -152,15 +168,15 @@ def run_pipeline():
     df_test_eval = df_test.copy()
     df_test_eval["Predicted_Sales"] = test_predictions[champion_name]
     
-    # Plot forecast vs actual with statistical 95% interval derived from validation RMSE
+    # Plot forecast vs actual with statistical 95% interval derived from validation aggregate residual std
     plot_forecast_vs_actual(
         df_test_eval,
         os.path.join(figures_dir, "actual_vs_predicted_comparison.png"),
         model_name=champion_name,
-        val_rmse=champion_val_rmse
+        val_agg_residual_std=val_agg_residual_std
     )
     plot_residual_diagnostics(df_test_eval, os.path.join(figures_dir, "residual_diagnostics.png"))
-    plot_inventory_recommendations(df_test_eval, os.path.join(figures_dir, "inventory_reorder_recommendation.png"))
+    plot_inventory_recommendations(df_test_eval, os.path.join(figures_dir, "inventory_reorder_recommendation.png"), lead_time_weeks=2)
     
     # Feature importance
     if hasattr(champion_model, "feature_importances_"):
@@ -183,13 +199,13 @@ def run_pipeline():
         f.write(f"""# RetailPulse Forecast — Sales & Demand Forecasting Executive Report
 
 ## Executive Summary
-This report presents the rigorous empirical validation of the **RetailPulse Forecast** machine learning demand planning engine.
-To adhere strictly to professional time-series standards:
+This report presents the empirical validation of the **RetailPulse Forecast** machine learning demand planning engine.
+The evaluation framework adheres strictly to statistical time-series best practices:
 1. **70% Training Set**: Used strictly to fit model weights.
 2. **15% Validation Set**: Used for candidate model benchmarking and champion selection.
 3. **15% Out-of-Time Test Set**: Reserved for a single, unbiased final evaluation of the selected champion model.
 
-The champion model selected on the validation set is **{champion_name}** (**{champion_val_wape:.2f}% Validation WAPE**).
+The champion model selected strictly on validation performance is **{champion_name}** (**{champion_val_wape:.2f}% Validation WAPE**).
 On the untouched out-of-time test horizon, **{champion_name}** achieved an unbiased **WAPE of {champ_test_row['WAPE (%)']:.2f}%** and an **R² score of {champ_test_row['R2 Score']:.4f}**.
 
 ---
@@ -212,11 +228,22 @@ On the untouched out-of-time test horizon, **{champion_name}** achieved an unbia
 
 ---
 
-## 3. Uncertainty Quantification & Inventory Policy
-- **Statistical Prediction Interval**: The forecast band plotted on the test horizon is derived from the empirical validation residual standard error $\\sigma_{{\\text{{val}}}} = \\${champion_val_rmse:,.2f}$, constructing a statistically grounded $95\\%$ prediction interval ($\\hat{{y}} \\pm 1.96 \\cdot \\sigma_{{\\text{{val}}}}$).
-- **Safety Stock Formula**: Calculated at a $95\\%$ Service Level Agreement ($Z = 1.645$) using residual forecast error standard deviation across a 2-week supplier lead time:
-  $$\\text{{Safety Stock}} = Z_{{0.95}} \\times \\text{{RMSE}}_{{\\text{{residual}}}} \\times \\sqrt{{L}}$$
-- **Reorder Point (ROP)**:
+## 3. Mathematical Formulation of Uncertainty & Inventory Buffer
+
+### A. Aggregate Forecast Prediction Interval
+The plotted demand forecast is an aggregation across all 30 store-department series: $\\hat{{Y}}_{{\\text{{agg}}, t}} = \\sum_{{i=1}}^{{30}} \\hat{{y}}_{{i, t}}$.
+The uncertainty band is computed directly from the empirical sample standard deviation of aggregate weekly forecast residuals measured on the validation set ($\\sigma_{{\\text{{agg}}, \\text{{val}}}} = \\${val_agg_residual_std:,.2f}$):
+$$\\text{{Lower Bound}} = \\max\\left(0, \\hat{{Y}}_{{\\text{{agg}}, t}} - 1.96 \\cdot \\sigma_{{\\text{{agg}}, \\text{{val}}}}\\right)$$
+$$\\text{{Upper Bound}} = \\hat{{Y}}_{{\\text{{agg}}, t}} + 1.96 \\cdot \\sigma_{{\\text{{agg}}, \\text{{val}}}}$$
+This constitutes an empirical $95\\%$ prediction interval under approximately normal aggregate forecast residuals.
+
+### B. Lead-Time Inventory Safety Stock & Reorder Point (ROP)
+Under standard supply chain inventory theory (Silver-Pyke-Peterson inventory model), demand uncertainty accumulates over the replenishment lead time ($L = 2\\text{{ weeks}}$).
+- **$\\sigma_{{\\text{{weekly}}}}$**: Sample standard deviation of weekly forecast errors for each individual department ($USD$).
+- **Lead-Time Uncertainty Scaling**: For independent weekly errors over $L$ weeks, the variance scales as $\\text{{Var}}(\\text{{Lead Time Error}}) = L \\cdot \\sigma_{{\\text{{weekly}}}}^2$, so the standard deviation of lead-time demand error is $\\sigma_L = \\sigma_{{\\text{{weekly}}}} \\cdot \\sqrt{{L}}$.
+- **Safety Stock at 95% Service Level** ($Z_{{0.95}} = 1.645$):
+  $$\\text{{Safety Stock}} = Z_{{0.95}} \\times \\sigma_{{\\text{{weekly}}}} \\times \\sqrt{{L}} = 1.645 \\times \\sigma_{{\\text{{weekly}}}} \\times \\sqrt{{2}}$$
+- **Dynamic Reorder Point (ROP)**:
   $$\\text{{ROP}} = (\\text{{Forecasted Weekly Demand}} \\times L) + \\text{{Safety Stock}}$$
 """)
     print(f"Executive Report generated: {report_path}")
