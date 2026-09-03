@@ -1,0 +1,8 @@
+Model,MAE ($),RMSE ($),MAPE (%),WAPE (%),R2 Score
+Random Forest,1369.86,2161.7,4.8,4.5,0.9923
+XGBoost Regressor,1384.25,2098.71,4.86,4.55,0.9928
+LightGBM Regressor,1519.41,2483.27,5.25,4.99,0.9899
+Ridge Regression,1650.42,2327.22,7.88,5.43,0.9911
+Seasonal Lag-52,1738.85,2661.81,5.95,5.72,0.9884
+Rolling 4W Moving Avg,1996.76,3474.41,6.61,6.56,0.9802
+Naive Lag-1,2417.93,4075.67,8.1,7.95,0.9727
