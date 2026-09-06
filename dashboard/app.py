@@ -20,12 +20,12 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Comprehensive Enterprise Styling & High-Contrast Overrides
+# 2. Comprehensive Enterprise Styling & Light Professional Overrides
 ENTERPRISE_THEME_CSS = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     
-    /* Global Base Styling */
+    /* Universal Base Rules */
     html, body, [class*="css"], .stApp {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
         background-color: #F7F3EC !important;
@@ -280,7 +280,7 @@ ENTERPRISE_THEME_CSS = """
         line-height: 1.55;
     }
     
-    /* Fix Selectbox / Dropdown Text & Background Visibility */
+    /* Selectbox Styling */
     .stSelectbox div[data-baseweb="select"] > div {
         background-color: #FFFFFF !important;
         border: 1.5px solid #D5CCC0 !important;
@@ -303,7 +303,6 @@ ENTERPRISE_THEME_CSS = """
         fill: #263238 !important;
     }
     
-    /* Dropdown Options Menu */
     div[data-baseweb="popover"],
     ul[role="listbox"],
     li[role="option"] {
@@ -349,6 +348,68 @@ ENTERPRISE_THEME_CSS = """
         background-color: #FFFFFF !important;
     }
     
+    /* Light Professional Enterprise Tables */
+    .enterprise-table-box {
+        background-color: #FFFFFF;
+        border: 1px solid #E5DED3;
+        border-radius: 6px;
+        overflow-x: auto;
+        margin-bottom: 1rem;
+    }
+    
+    .enterprise-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.86rem;
+        color: #263238;
+        text-align: left;
+    }
+    
+    .enterprise-table th {
+        background-color: #FAF7F2;
+        color: #4F5B61;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.74rem;
+        letter-spacing: 0.04em;
+        padding: 0.65rem 0.85rem;
+        border-bottom: 1.5px solid #E5DED3;
+        white-space: nowrap;
+    }
+    
+    .enterprise-table td {
+        padding: 0.6rem 0.85rem;
+        border-bottom: 1px solid #F0ECE4;
+        white-space: nowrap;
+        color: #263238;
+    }
+    
+    .enterprise-table tr:hover {
+        background-color: #FDFBF7;
+    }
+    
+    .enterprise-table tr.champion-row {
+        background-color: #FAF2EC !important;
+        font-weight: 700;
+    }
+    
+    .enterprise-table tr.champion-row td {
+        color: #8C3B1D !important;
+        border-bottom: 1px solid #EAD8CC;
+    }
+    
+    .champion-badge {
+        display: inline-block;
+        font-size: 0.7rem;
+        font-weight: 800;
+        background-color: #B85C38;
+        color: #FFFFFF !important;
+        padding: 0.15rem 0.45rem;
+        border-radius: 3px;
+        margin-left: 0.4rem;
+        letter-spacing: 0.03em;
+    }
+    
     /* Simulator Summary Banner */
     .simulator-banner {
         background-color: #FAF4EE;
@@ -392,7 +453,7 @@ ENTERPRISE_THEME_CSS = """
         border: 1px solid #E5DED3;
         border-radius: 6px;
         padding: 1.1rem 1.2rem;
-        border-top: 3px solid #B85C38;
+        border-top: 3.5px solid #B85C38;
     }
     
     .insight-card.sage {
@@ -478,6 +539,29 @@ PLOTLY_CONFIG = {
         "scale": 2
     }
 }
+
+# Helper function for rendering light professional tables
+def render_light_table(df_table, champion_col=None, champion_val=None):
+    html = ['<div class="enterprise-table-box"><table class="enterprise-table">']
+    # Headers
+    html.append("<thead><tr>")
+    for col in df_table.columns:
+        html.append(f"<th>{col}</th>")
+    html.append("</tr></thead><tbody>")
+    # Rows
+    for _, row in df_table.iterrows():
+        is_champ = (champion_col is not None and str(row.get(champion_col, "")) == str(champion_val))
+        row_cls = ' class="champion-row"' if is_champ else ""
+        html.append(f"<tr{row_cls}>")
+        for col in df_table.columns:
+            val = row[col]
+            cell_str = str(val)
+            if is_champ and col == "Model":
+                cell_str += ' <span class="champion-badge">CHAMPION</span>'
+            html.append(f"<td>{cell_str}</td>")
+        html.append("</tr>")
+    html.append("</tbody></table></div>")
+    return "".join(html)
 
 # 4. Header Section
 st.markdown("""
@@ -600,20 +684,20 @@ if df is not None:
         template="plotly_white",
         paper_bgcolor="#FFFFFF",
         plot_bgcolor="#FFFFFF",
-        height=350,
+        height=360,
         font=dict(family="Inter, sans-serif", color="#263238", size=12),
-        margin=dict(l=60, r=25, t=35, b=65),
+        margin=dict(l=65, r=30, t=75, b=55),
         hovermode="x unified",
         legend=dict(
             orientation="h",
-            yanchor="top",
-            y=-0.18,
-            xanchor="center",
-            x=0.5,
+            yanchor="bottom",
+            y=1.04,
+            xanchor="left",
+            x=0,
             font=dict(size=11, color="#263238", family="Inter, sans-serif")
         ),
         xaxis=dict(
-            title=dict(text="Calendar Date", font=dict(color="#263238", size=12)),
+            title=dict(text="Calendar Date", font=dict(color="#263238", size=12), standoff=15),
             tickfont=dict(color="#263238", size=11),
             showgrid=True,
             gridcolor="#EFEAE1",
@@ -722,20 +806,20 @@ if df is not None:
                 template="plotly_white",
                 paper_bgcolor="#FFFFFF",
                 plot_bgcolor="#FFFFFF",
-                height=360,
+                height=380,
                 font=dict(family="Inter, sans-serif", color="#263238", size=12),
-                margin=dict(l=60, r=25, t=35, b=65),
+                margin=dict(l=65, r=30, t=75, b=55),
                 hovermode="x unified",
                 legend=dict(
                     orientation="h",
-                    yanchor="top",
-                    y=-0.18,
-                    xanchor="center",
-                    x=0.5,
+                    yanchor="bottom",
+                    y=1.04,
+                    xanchor="left",
+                    x=0,
                     font=dict(size=11, color="#263238", family="Inter, sans-serif")
                 ),
                 xaxis=dict(
-                    title=dict(text="Test Horizon Week Date", font=dict(color="#263238", size=12)),
+                    title=dict(text="Test Horizon Week Date", font=dict(color="#263238", size=12), standoff=15),
                     tickfont=dict(color="#263238", size=11),
                     showgrid=True,
                     gridcolor="#EFEAE1",
@@ -779,32 +863,32 @@ if df is not None:
         
         if val_metrics_df is not None and test_metrics_df is not None:
             col_m1, col_m2 = st.columns([5, 5])
+            
+            # Format validation metrics cleanly
+            val_disp = val_metrics_df.copy()
+            val_disp["MAE"] = val_disp["MAE ($)"].apply(lambda x: f"${x:,.2f}")
+            val_disp["RMSE"] = val_disp["RMSE ($)"].apply(lambda x: f"${x:,.2f}")
+            val_disp["MAPE"] = val_disp["MAPE (%)"].apply(lambda x: f"{x:.2f}%")
+            val_disp["WAPE"] = val_disp["WAPE (%)"].apply(lambda x: f"{x:.2f}%")
+            val_disp["R2"] = val_disp["R2 Score"].apply(lambda x: f"{x:.4f}")
+            val_disp = val_disp[["Model", "MAE", "RMSE", "MAPE", "WAPE", "R2"]]
+            
+            # Format test metrics cleanly
+            test_disp = test_metrics_df.copy()
+            test_disp["MAE"] = test_disp["MAE ($)"].apply(lambda x: f"${x:,.2f}")
+            test_disp["RMSE"] = test_disp["RMSE ($)"].apply(lambda x: f"${x:,.2f}")
+            test_disp["MAPE"] = test_disp["MAPE (%)"].apply(lambda x: f"{x:.2f}%")
+            test_disp["WAPE"] = test_disp["WAPE (%)"].apply(lambda x: f"{x:.2f}%")
+            test_disp["R2"] = test_disp["R2 Score"].apply(lambda x: f"{x:.4f}")
+            test_disp = test_disp[["Model", "MAE", "RMSE", "MAPE", "WAPE", "R2"]]
+            
             with col_m1:
                 st.markdown("**1. Validation Set Benchmarking (Champion Selection)**")
-                st.dataframe(
-                    val_metrics_df.style.format({
-                        "MAE ($)": "${:,.2f}",
-                        "RMSE ($)": "${:,.2f}",
-                        "MAPE (%)": "{:.2f}%",
-                        "WAPE (%)": "{:.2f}%",
-                        "R2 Score": "{:.4f}"
-                    }).highlight_min(subset=["WAPE (%)", "MAE ($)", "RMSE ($)"], color="#FAF0EA"),
-                    width="stretch",
-                    height=260
-                )
+                st.markdown(render_light_table(val_disp, champion_col="Model", champion_val="XGBoost Regressor"), unsafe_allow_html=True)
+                
             with col_m2:
                 st.markdown("**2. Final Out-of-Time Test Evaluation (Unbiased Horizon)**")
-                st.dataframe(
-                    test_metrics_df.style.format({
-                        "MAE ($)": "${:,.2f}",
-                        "RMSE ($)": "${:,.2f}",
-                        "MAPE (%)": "{:.2f}%",
-                        "WAPE (%)": "{:.2f}%",
-                        "R2 Score": "{:.4f}"
-                    }).highlight_min(subset=["WAPE (%)", "MAE ($)", "RMSE ($)"], color="#FAF0EA"),
-                    width="stretch",
-                    height=260
-                )
+                st.markdown(render_light_table(test_disp, champion_col="Model", champion_val="XGBoost Regressor"), unsafe_allow_html=True)
                 
             fig_bar = px.bar(
                 val_metrics_df.sort_values("WAPE (%)", ascending=True),
@@ -818,11 +902,11 @@ if df is not None:
                 template="plotly_white",
                 paper_bgcolor="#FFFFFF",
                 plot_bgcolor="#FFFFFF",
-                height=280,
+                height=290,
                 font=dict(family="Inter, sans-serif", color="#263238", size=12),
-                margin=dict(l=45, r=20, t=40, b=45),
+                margin=dict(l=55, r=25, t=55, b=55),
                 xaxis=dict(
-                    title="",
+                    title=dict(text="", standoff=10),
                     tickangle=-15,
                     tickfont=dict(color="#263238", size=11),
                     linecolor="#D5CCC0"
@@ -857,54 +941,39 @@ if df is not None:
             if "Dept_Name" not in disp_err.columns and "Dept_ID" in disp_err.columns:
                 disp_err["Dept_Name"] = disp_err["Dept_ID"].map(dept_map)
                 
-            col_rename = {
-                "Dept_ID": "Dept ID",
-                "Dept_Name": "Department",
-                "Mean_Actual": "Mean Actual ($)",
-                "Mean_Predicted": "Mean Predicted ($)",
-                "MAE": "MAE ($)",
-                "RMSE": "RMSE ($)",
-                "WAPE": "WAPE (%)"
-            }
-            disp_err = disp_err.rename(columns=col_rename)
-            
-            fmt_dict = {}
-            for col in ["Mean Actual ($)", "Mean Predicted ($)", "MAE ($)", "RMSE ($)"]:
-                if col in disp_err.columns:
-                    fmt_dict[col] = "${:,.2f}"
-            if "WAPE (%)" in disp_err.columns:
-                fmt_dict["WAPE (%)"] = "{:.2f}%"
-                
-            highlight_cols = [c for c in ["WAPE (%)", "MAE ($)", "RMSE ($)"] if c in disp_err.columns]
+            err_table_df = pd.DataFrame()
+            err_table_df["Dept ID"] = disp_err["Dept_ID"]
+            err_table_df["Department"] = disp_err["Dept_Name"]
+            err_table_df["Mean Actual"] = disp_err["Mean_Actual"].apply(lambda x: f"${x:,.2f}")
+            err_table_df["Mean Predicted"] = disp_err["Mean_Predicted"].apply(lambda x: f"${x:,.2f}")
+            err_table_df["MAE"] = disp_err["MAE"].apply(lambda x: f"${x:,.2f}")
+            err_table_df["RMSE"] = disp_err["RMSE"].apply(lambda x: f"${x:,.2f}")
+            err_table_df["WAPE"] = disp_err["WAPE"].apply(lambda x: f"{x:.2f}%")
             
             with ec1:
                 st.markdown("**Department Sliced Error Breakdown**")
-                st.dataframe(
-                    disp_err.style.format(fmt_dict).highlight_min(subset=highlight_cols, color="#FAF0EA"),
-                    width="stretch",
-                    height=250
-                )
+                st.markdown(render_light_table(err_table_df), unsafe_allow_html=True)
+                
             with ec2:
-                x_col = "Department" if "Department" in disp_err.columns else "Dept ID"
-                y_col = "WAPE (%)" if "WAPE (%)" in disp_err.columns else "WAPE"
+                x_col = "Dept_Name" if "Dept_Name" in disp_err.columns else "Dept_ID"
                 
                 fig_err_bar = px.bar(
                     disp_err,
                     x=x_col,
-                    y=y_col,
-                    color=y_col,
+                    y="WAPE",
+                    color="WAPE",
                     color_continuous_scale=["#718B75", "#C39A3A", "#B85C38"],
-                    title="Department Error Comparison (WAPE % — Lower is Better)"
+                    title="Department Error Rate (WAPE % — Lower is Better)"
                 )
                 fig_err_bar.update_layout(
                     template="plotly_white",
                     paper_bgcolor="#FFFFFF",
                     plot_bgcolor="#FFFFFF",
-                    height=250,
+                    height=270,
                     font=dict(family="Inter, sans-serif", color="#263238", size=12),
-                    margin=dict(l=45, r=20, t=40, b=40),
+                    margin=dict(l=55, r=25, t=55, b=55),
                     xaxis=dict(
-                        title="",
+                        title=dict(text="", standoff=10),
                         tickfont=dict(color="#263238", size=11),
                         linecolor="#D5CCC0"
                     ),
@@ -982,12 +1051,12 @@ if df is not None:
             template="plotly_white",
             paper_bgcolor="#FFFFFF",
             plot_bgcolor="#FFFFFF",
-            height=280,
+            height=290,
             font=dict(family="Inter, sans-serif", color="#263238", size=12),
-            margin=dict(l=45, r=20, t=45, b=45),
+            margin=dict(l=55, r=25, t=55, b=55),
             showlegend=False,
             xaxis=dict(
-                title="",
+                title=dict(text="", standoff=10),
                 tickfont=dict(color="#263238", size=11),
                 linecolor="#D5CCC0"
             ),
@@ -1072,19 +1141,20 @@ if df is not None:
             template="plotly_white",
             paper_bgcolor="#FFFFFF",
             plot_bgcolor="#FFFFFF",
-            height=260,
+            height=280,
             font=dict(family="Inter, sans-serif", color="#263238", size=12),
             title=dict(text=f"Inventory Reorder Composition (Lead Time = {lead_time_w} Weeks)", font=dict(color="#263238", size=12)),
-            margin=dict(l=45, r=20, t=35, b=65),
+            margin=dict(l=55, r=25, t=75, b=55),
             legend=dict(
                 orientation="h",
-                yanchor="top",
-                y=-0.18,
-                xanchor="center",
-                x=0.5,
+                yanchor="bottom",
+                y=1.04,
+                xanchor="left",
+                x=0,
                 font=dict(size=11, color="#263238", family="Inter, sans-serif")
             ),
             xaxis=dict(
+                title=dict(text="", standoff=10),
                 tickfont=dict(color="#263238", size=11),
                 linecolor="#D5CCC0"
             ),
