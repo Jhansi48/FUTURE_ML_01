@@ -1,4 +1,4 @@
-﻿"""
+"""
 RetailPulse Forecast - Enterprise Decision-Support Dashboard
 Professional retail analytics application for demand forecasting, out-of-time model evaluation,
 residual error analysis, inventory buffer planning, and promotional scenario simulation.
@@ -398,7 +398,7 @@ if df is not None:
         xaxis=dict(title="", showgrid=True, gridcolor="#F2EFE9", linecolor="#E5DED3"),
         yaxis=dict(title="Sales ($ USD)", showgrid=True, gridcolor="#F2EFE9", linecolor="#E5DED3", tickprefix="$", tickformat=",")
     )
-    st.plotly_chart(fig_hist, use_container_width=True, config=PLOTLY_CONFIG)
+    st.plotly_chart(fig_hist, width="stretch", config=PLOTLY_CONFIG)
     st.markdown("</div>", unsafe_allow_html=True)
 
     # 8. SECTION 2: Actual Machine Learning Demand Forecast
@@ -482,7 +482,7 @@ if df is not None:
                 xaxis=dict(title="", showgrid=True, gridcolor="#F2EFE9", linecolor="#E5DED3"),
                 yaxis=dict(title="Weekly Sales ($ USD)", showgrid=True, gridcolor="#F2EFE9", linecolor="#E5DED3", tickprefix="$", tickformat=",")
             )
-            st.plotly_chart(fig_fc, use_container_width=True, config=PLOTLY_CONFIG)
+            st.plotly_chart(fig_fc, width="stretch", config=PLOTLY_CONFIG)
     except Exception as e:
         st.warning(f"Note: Forecast visualization loading ({e}). Ensure pipeline.py has completed.")
         
@@ -515,7 +515,7 @@ if df is not None:
                         "WAPE (%)": "{:.2f}%",
                         "R2 Score": "{:.4f}"
                     }).highlight_min(subset=["WAPE (%)", "MAE ($)", "RMSE ($)"], color="#FAF0E6"),
-                    use_container_width=True,
+                    width="stretch",
                     height=240
                 )
             with col_m2:
@@ -528,7 +528,7 @@ if df is not None:
                         "WAPE (%)": "{:.2f}%",
                         "R2 Score": "{:.4f}"
                     }).highlight_min(subset=["WAPE (%)", "MAE ($)", "RMSE ($)"], color="#FAF0E6"),
-                    use_container_width=True,
+                    width="stretch",
                     height=240
                 )
                 
@@ -550,7 +550,7 @@ if df is not None:
                 yaxis=dict(title="WAPE (%)", showgrid=True, gridcolor="#F2EFE9"),
                 coloraxis_showscale=False
             )
-            st.plotly_chart(fig_bar, use_container_width=True, config=PLOTLY_CONFIG)
+            st.plotly_chart(fig_bar, width="stretch", config=PLOTLY_CONFIG)
 
     # TAB 2: ERROR ANALYSIS
     with tab_error:
@@ -559,27 +559,52 @@ if df is not None:
         
         if dept_error_df is not None:
             ec1, ec2 = st.columns([5, 5])
+            
+            # Prepare formatted display dataframe with real dataframe columns
+            disp_err = dept_error_df.copy()
+            dept_map = {1: "Electronics", 2: "Apparel", 3: "Grocery", 4: "Home & Garden", 5: "Toys", 6: "Health & Beauty"}
+            if "Dept_Name" not in disp_err.columns and "Dept_ID" in disp_err.columns:
+                disp_err["Dept_Name"] = disp_err["Dept_ID"].map(dept_map)
+                
+            col_rename = {
+                "Dept_ID": "Dept ID",
+                "Dept_Name": "Department",
+                "Mean_Actual": "Mean Actual ($)",
+                "Mean_Predicted": "Mean Predicted ($)",
+                "MAE": "MAE ($)",
+                "RMSE": "RMSE ($)",
+                "WAPE": "WAPE (%)"
+            }
+            disp_err = disp_err.rename(columns=col_rename)
+            
+            # Format dictionary strictly for existing renamed columns
+            fmt_dict = {}
+            for col in ["Mean Actual ($)", "Mean Predicted ($)", "MAE ($)", "RMSE ($)"]:
+                if col in disp_err.columns:
+                    fmt_dict[col] = "${:,.2f}"
+            if "WAPE (%)" in disp_err.columns:
+                fmt_dict["WAPE (%)"] = "{:.2f}%"
+                
+            highlight_cols = [c for c in ["WAPE (%)", "MAE ($)", "RMSE ($)"] if c in disp_err.columns]
+            
             with ec1:
                 st.markdown("**Department Sliced Error Breakdown**")
                 st.dataframe(
-                    dept_error_df.style.format({
-                        "MAE ($)": "${:,.2f}",
-                        "RMSE ($)": "${:,.2f}",
-                        "WAPE (%)": "{:.2f}%",
-                        "MAPE (%)": "{:.2f}%",
-                        "R2 Score": "{:.4f}"
-                    }).highlight_min(subset=["WAPE (%)", "MAE ($)"], color="#FAF0E6"),
-                    use_container_width=True,
+                    disp_err.style.format(fmt_dict).highlight_min(subset=highlight_cols, color="#FAF0E6"),
+                    width="stretch",
                     height=240
                 )
             with ec2:
+                x_col = "Department" if "Department" in disp_err.columns else "Dept ID"
+                y_col = "WAPE (%)" if "WAPE (%)" in disp_err.columns else "WAPE"
+                
                 fig_err_bar = px.bar(
-                    dept_error_df,
-                    x="Dept_Name",
-                    y="WAPE (%)",
-                    color="WAPE (%)",
+                    disp_err,
+                    x=x_col,
+                    y=y_col,
+                    color=y_col,
                     color_continuous_scale=["#718B75", "#C39A3A", "#B85C38"],
-                    title="Department Error Comparison (WAPE %)"
+                    title="Department Error Comparison (WAPE % — Lower is Better)"
                 )
                 fig_err_bar.update_layout(
                     template="plotly_white",
@@ -591,7 +616,7 @@ if df is not None:
                     yaxis=dict(title="WAPE (%)", showgrid=True, gridcolor="#F2EFE9"),
                     coloraxis_showscale=False
                 )
-                st.plotly_chart(fig_err_bar, use_container_width=True, config=PLOTLY_CONFIG)
+                st.plotly_chart(fig_err_bar, width="stretch", config=PLOTLY_CONFIG)
 
     # TAB 3: DEMAND SIMULATOR
     with tab_sim:
@@ -656,7 +681,7 @@ if df is not None:
             showlegend=False,
             yaxis=dict(showgrid=True, gridcolor="#F2EFE9", tickprefix="$")
         )
-        st.plotly_chart(fig_comp, use_container_width=True, config=PLOTLY_CONFIG)
+        st.plotly_chart(fig_comp, width="stretch", config=PLOTLY_CONFIG)
 
     # TAB 4: INVENTORY PLANNING
     with tab_inv:
@@ -727,7 +752,7 @@ if df is not None:
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=11, color="#263238")),
             yaxis=dict(showgrid=True, gridcolor="#F2EFE9", tickprefix="$", tickformat=",")
         )
-        st.plotly_chart(fig_stack, use_container_width=True, config=PLOTLY_CONFIG)
+        st.plotly_chart(fig_stack, width="stretch", config=PLOTLY_CONFIG)
 
     # TAB 5: BUSINESS INSIGHTS
     with tab_insights:

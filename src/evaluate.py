@@ -37,17 +37,23 @@ def analyze_error_by_segment(
     pred_col: str = "Predicted_Sales",
     target_col: str = "Weekly_Sales"
 ) -> pd.DataFrame:
-    """Calculates error metrics sliced by Store Type, Department, and Holiday status."""
+    """Calculates error metrics sliced by Department on the evaluation set."""
     df = df_eval.copy()
     df["Error"] = df[pred_col] - df[target_col]
     df["Abs_Error"] = np.abs(df["Error"])
-    df["Pct_Error"] = (df["Abs_Error"] / df[target_col]) * 100.0
+    df["Sq_Error"] = df["Error"] ** 2
     
-    # Group by Dept
-    dept_stats = df.groupby("Dept_ID").agg(
+    dept_names_map = {1: "Electronics", 2: "Apparel", 3: "Grocery", 4: "Home & Garden", 5: "Toys", 6: "Health & Beauty"}
+    if "Dept_Name" not in df.columns and "Dept_ID" in df.columns:
+        df["Dept_Name"] = df["Dept_ID"].map(dept_names_map)
+        
+    group_cols = ["Dept_ID", "Dept_Name"] if "Dept_Name" in df.columns else ["Dept_ID"]
+    
+    dept_stats = df.groupby(group_cols).agg(
         Mean_Actual=(target_col, "mean"),
         Mean_Predicted=(pred_col, "mean"),
         MAE=("Abs_Error", "mean"),
+        RMSE=("Sq_Error", lambda x: np.sqrt(x.mean())),
         WAPE=("Abs_Error", lambda x: (x.sum() / df.loc[x.index, target_col].sum()) * 100.0)
     ).reset_index()
     
