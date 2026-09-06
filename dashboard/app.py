@@ -20,40 +20,58 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Warm Retail Analytics Palette CSS
+# 2. Warm Retail Analytics Palette CSS with High Contrast & Strict Overrides
 WARM_RETAIL_CSS = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     
-    html, body, [class*="css"] {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        color: #263238;
+    /* Universal Base Rules */
+    html, body, [class*="css"], .stApp {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        background-color: #F7F3EC !important;
+        color: #263238 !important;
     }
     
-    .stApp {
-        background-color: #F7F3EC;
+    /* Force high contrast dark charcoal on all headings and markdown text */
+    h1, h2, h3, h4, h5, h6,
+    .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4,
+    [data-testid="stMarkdownContainer"] h1,
+    [data-testid="stMarkdownContainer"] h2,
+    [data-testid="stMarkdownContainer"] h3,
+    [data-testid="stMarkdownContainer"] h4 {
+        color: #263238 !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-weight: 700 !important;
+    }
+    
+    p, span, label, div,
+    [data-testid="stMarkdownContainer"] p,
+    [data-testid="stMarkdownContainer"] span,
+    [data-testid="stMarkdownContainer"] li {
+        color: #263238 !important;
     }
     
     /* Top Header Section */
     .dashboard-header {
-        padding: 0.5rem 0 1rem 0;
-        border-bottom: 1px solid #E5DED3;
+        padding: 0.6rem 0 1rem 0;
+        border-bottom: 1.5px solid #E5DED3;
         margin-bottom: 1.25rem;
     }
     
     .dashboard-title {
-        font-size: 1.55rem;
-        font-weight: 700;
-        color: #263238;
-        margin: 0;
-        letter-spacing: -0.01em;
+        font-size: 1.7rem !important;
+        font-weight: 700 !important;
+        color: #263238 !important;
+        margin: 0 !important;
+        letter-spacing: -0.02em;
     }
     
     .dashboard-subtitle {
-        font-size: 0.88rem;
-        color: #687078;
-        margin-top: 0.25rem;
-        margin-bottom: 0;
+        font-size: 0.92rem !important;
+        color: #4F5B61 !important;
+        margin-top: 0.3rem !important;
+        margin-bottom: 0 !important;
+        font-weight: 500 !important;
     }
     
     /* KPI Cards Grid */
@@ -65,138 +83,181 @@ WARM_RETAIL_CSS = """
     }
     
     .kpi-box {
-        background-color: #FFFFFF;
-        border: 1px solid #E5DED3;
+        background-color: #FFFFFF !important;
+        border: 1px solid #E5DED3 !important;
         border-radius: 6px;
-        padding: 0.85rem 1.1rem;
-        box-shadow: 0 1px 3px rgba(38, 50, 56, 0.04);
-        border-top: 3px solid #B85C38;
+        padding: 0.9rem 1.1rem;
+        box-shadow: 0 1px 3px rgba(38, 50, 56, 0.05);
+        border-top: 3.5px solid #B85C38 !important;
     }
     
     .kpi-box.sage {
-        border-top-color: #718B75;
+        border-top-color: #718B75 !important;
     }
     
     .kpi-box.gold {
-        border-top-color: #C39A3A;
+        border-top-color: #C39A3A !important;
     }
     
     .kpi-box.terracotta {
-        border-top-color: #B85C38;
+        border-top-color: #B85C38 !important;
     }
     
     .kpi-box.charcoal {
-        border-top-color: #455A64;
+        border-top-color: #455A64 !important;
     }
     
     .kpi-title {
-        font-size: 0.72rem;
-        font-weight: 600;
+        font-size: 0.76rem !important;
+        font-weight: 700 !important;
         text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: #687078;
-        margin-bottom: 0.25rem;
+        letter-spacing: 0.05em;
+        color: #4F5B61 !important;
+        margin-bottom: 0.3rem;
     }
     
     .kpi-num {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: #263238;
+        font-size: 1.55rem !important;
+        font-weight: 700 !important;
+        color: #263238 !important;
         line-height: 1.2;
     }
     
     .kpi-sub {
-        font-size: 0.78rem;
-        font-weight: 600;
-        margin-top: 0.25rem;
+        font-size: 0.82rem !important;
+        font-weight: 600 !important;
+        margin-top: 0.3rem;
     }
     
     .kpi-sub.positive {
-        color: #4A6B50;
+        color: #4A6B50 !important;
     }
     
     .kpi-sub.muted {
-        color: #687078;
+        color: #4F5B61 !important;
     }
     
     .kpi-sub.gold-text {
-        color: #9E7D23;
+        color: #9E7D23 !important;
     }
     
     /* Section Containers */
     .section-card {
-        background-color: #FFFFFF;
-        border: 1px solid #E5DED3;
+        background-color: #FFFFFF !important;
+        border: 1px solid #E5DED3 !important;
         border-radius: 6px;
-        padding: 1.1rem 1.25rem;
+        padding: 1.15rem 1.3rem;
         margin-bottom: 1.25rem;
-        box-shadow: 0 1px 3px rgba(38, 50, 56, 0.03);
+        box-shadow: 0 1px 3px rgba(38, 50, 56, 0.04);
     }
     
     .section-title {
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: #263238;
-        margin: 0 0 0.2rem 0;
+        font-size: 1.12rem !important;
+        font-weight: 700 !important;
+        color: #263238 !important;
+        margin: 0 0 0.25rem 0 !important;
     }
     
     .section-desc {
-        font-size: 0.82rem;
-        color: #687078;
-        margin-bottom: 0.85rem;
+        font-size: 0.85rem !important;
+        color: #4F5B61 !important;
+        margin-bottom: 0.85rem !important;
+        line-height: 1.4;
     }
     
-    /* Sidebar Clean Styling */
+    /* Forecast Horizon Metrics Card */
+    .forecast-meta-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.8rem;
+        margin-bottom: 0.9rem;
+    }
+    
+    .forecast-meta-box {
+        background-color: #FBF9F5;
+        border: 1px solid #E5DED3;
+        border-radius: 5px;
+        padding: 0.65rem 0.9rem;
+    }
+    
+    .forecast-meta-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #4F5B61;
+        letter-spacing: 0.04em;
+    }
+    
+    .forecast-meta-val {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #263238;
+        margin-top: 0.15rem;
+    }
+    
+    /* Sidebar Styling */
     [data-testid="stSidebar"] {
-        background-color: #FFFFFF;
-        border-right: 1px solid #E5DED3;
+        background-color: #FFFFFF !important;
+        border-right: 1.5px solid #E5DED3 !important;
+    }
+    
+    [data-testid="stSidebar"] * {
+        color: #263238 !important;
     }
     
     .sidebar-brand {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #B85C38;
+        font-size: 1.15rem !important;
+        font-weight: 700 !important;
+        color: #B85C38 !important;
         margin-bottom: 0.2rem;
     }
     
     .sidebar-brand-sub {
-        font-size: 0.78rem;
-        color: #687078;
+        font-size: 0.8rem !important;
+        color: #4F5B61 !important;
         margin-bottom: 0.9rem;
         padding-bottom: 0.5rem;
         border-bottom: 1px solid #E5DED3;
     }
     
     .sidebar-info-card {
-        background-color: #F7F3EC;
-        border: 1px solid #E5DED3;
+        background-color: #F7F3EC !important;
+        border: 1px solid #E5DED3 !important;
         border-radius: 6px;
-        padding: 0.75rem 0.85rem;
-        font-size: 0.8rem;
-        color: #263238;
+        padding: 0.85rem 0.95rem;
+        font-size: 0.84rem !important;
+        color: #263238 !important;
         margin-top: 1rem;
-        line-height: 1.45;
+        line-height: 1.5;
+    }
+    
+    /* Form controls & labels */
+    .stSelectbox label, .stSlider label, [data-testid="stWidgetLabel"] p {
+        font-weight: 600 !important;
+        color: #263238 !important;
+        font-size: 0.88rem !important;
     }
     
     /* Tabs Navigation */
     .stTabs [data-baseweb="tab-list"] {
         gap: 0.4rem;
-        border-bottom: 1px solid #E5DED3;
+        border-bottom: 1.5px solid #E5DED3;
     }
     
     .stTabs [data-baseweb="tab"] {
-        padding: 0.5rem 1rem;
-        font-weight: 600;
-        font-size: 0.85rem;
-        color: #687078;
+        padding: 0.55rem 1.1rem !important;
+        font-weight: 600 !important;
+        font-size: 0.88rem !important;
+        color: #4F5B61 !important;
         border-radius: 4px 4px 0 0;
-        border-bottom: 2px solid transparent;
+        border-bottom: 2.5px solid transparent;
+        background-color: transparent !important;
     }
     
     .stTabs [aria-selected="true"] {
         color: #B85C38 !important;
         border-bottom-color: #B85C38 !important;
-        background-color: transparent !important;
+        background-color: #FFFFFF !important;
     }
     
     /* Simulator Summary Banner */
@@ -205,12 +266,12 @@ WARM_RETAIL_CSS = """
         border: 1px solid #E5DED3;
         border-left: 4px solid #B85C38;
         border-radius: 6px;
-        padding: 0.85rem 1.1rem;
+        padding: 0.9rem 1.15rem;
         margin: 0.75rem 0 1rem 0;
     }
     
     .sim-banner-title {
-        font-size: 0.75rem;
+        font-size: 0.76rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.04em;
@@ -218,15 +279,15 @@ WARM_RETAIL_CSS = """
     }
     
     .sim-banner-value {
-        font-size: 1.55rem;
+        font-size: 1.6rem;
         font-weight: 700;
         color: #263238;
-        margin: 0.15rem 0;
+        margin: 0.2rem 0;
     }
     
     .sim-banner-sub {
-        font-size: 0.82rem;
-        color: #687078;
+        font-size: 0.86rem;
+        color: #4F5B61;
     }
 </style>
 """
@@ -265,16 +326,25 @@ df = load_data()
 val_metrics_df, test_metrics_df, dept_error_df = load_all_metrics()
 champion_payload = load_champion_model()
 
-# Plotly toolbar configuration
+# Full Plotly Toolbar Configuration with Interactive Tools
 PLOTLY_CONFIG = {
     "displayModeBar": True,
     "displaylogo": False,
-    "modeBarButtonsToAdd": ["drawline", "drawopenpath", "eraseshape"],
+    "scrollZoom": True,
+    "modeBarButtonsToAdd": [
+        "drawline",
+        "drawopenpath",
+        "drawclosedpath",
+        "drawrect",
+        "drawcircle",
+        "eraseshape"
+    ],
+    "modeBarButtonsToRemove": [],
     "toImageButtonOptions": {
         "format": "png",
-        "filename": "retailpulse_chart",
-        "height": 450,
-        "width": 900,
+        "filename": "retailpulse_analytics_chart",
+        "height": 550,
+        "width": 1050,
         "scale": 2
     }
 }
@@ -365,7 +435,7 @@ if df is not None:
         y=filtered_df["Weekly_Sales"],
         mode="lines",
         name="Weekly Actual Sales",
-        line=dict(color="#B85C38", width=2.0),
+        line=dict(color="#B85C38", width=2.2),
         hovertemplate="<b>Date:</b> %{x|%Y-%m-%d}<br><b>Sales:</b> $%{y:,.2f}<extra></extra>"
     ))
     filtered_df["SMA_4W"] = filtered_df["Weekly_Sales"].rolling(4, min_periods=1).mean()
@@ -374,7 +444,7 @@ if df is not None:
         y=filtered_df["SMA_4W"],
         mode="lines",
         name="4-Week Moving Average",
-        line=dict(color="#687078", width=1.5, dash="dot"),
+        line=dict(color="#455A64", width=1.7, dash="dot"),
         hovertemplate="<b>4W Trend:</b> $%{y:,.2f}<extra></extra>"
     ))
     holiday_events = filtered_df[filtered_df["IsHoliday"] == 1]
@@ -384,19 +454,41 @@ if df is not None:
             y=holiday_events["Weekly_Sales"],
             mode="markers",
             name="Holiday Surge",
-            marker=dict(color="#C39A3A", size=7, symbol="diamond", line=dict(color="#FFFFFF", width=0.8)),
+            marker=dict(color="#C39A3A", size=8, symbol="diamond", line=dict(color="#263238", width=0.8)),
             hovertemplate="<b>Holiday Event:</b> $%{y:,.2f}<br><b>Date:</b> %{x|%Y-%m-%d}<extra></extra>"
         ))
     fig_hist.update_layout(
         template="plotly_white",
         paper_bgcolor="#FFFFFF",
         plot_bgcolor="#FFFFFF",
-        height=320,
-        margin=dict(l=45, r=20, t=10, b=30),
+        height=340,
+        font=dict(family="Inter, sans-serif", color="#263238", size=12),
+        margin=dict(l=55, r=25, t=50, b=45),
         hovermode="x unified",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=11, color="#263238")),
-        xaxis=dict(title="", showgrid=True, gridcolor="#F2EFE9", linecolor="#E5DED3"),
-        yaxis=dict(title="Sales ($ USD)", showgrid=True, gridcolor="#F2EFE9", linecolor="#E5DED3", tickprefix="$", tickformat=",")
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.06,
+            xanchor="left",
+            x=0,
+            font=dict(size=11, color="#263238", family="Inter, sans-serif")
+        ),
+        xaxis=dict(
+            title=dict(text="Calendar Week Date", font=dict(color="#263238", size=12)),
+            tickfont=dict(color="#263238", size=11),
+            showgrid=True,
+            gridcolor="#EFEAE1",
+            linecolor="#D5CCC0"
+        ),
+        yaxis=dict(
+            title=dict(text="Weekly Sales ($ USD)", font=dict(color="#263238", size=12)),
+            tickfont=dict(color="#263238", size=11),
+            showgrid=True,
+            gridcolor="#EFEAE1",
+            linecolor="#D5CCC0",
+            tickprefix="$",
+            tickformat=","
+        )
     )
     st.plotly_chart(fig_hist, width="stretch", config=PLOTLY_CONFIG)
     st.markdown("</div>", unsafe_allow_html=True)
@@ -435,10 +527,23 @@ if df is not None:
             lower_bound = np.maximum(0, series_test["Predicted_Sales"] - pred_interval)
             upper_bound = series_test["Predicted_Sales"] + pred_interval
             
-            fc_c1, fc_c2, fc_c3 = st.columns(3)
-            fc_c1.metric("Forecast Horizon", f"{series_test['Date'].min().strftime('%b %d')} – {series_test['Date'].max().strftime('%b %d, %Y')}")
-            fc_c2.metric("Series Test WAPE", f"{test_wape:.2f}%", delta="High Precision", delta_color="normal")
-            fc_c3.metric("Series Test MAE", f"${test_mae:,.2f}")
+            # High contrast metadata banner
+            st.markdown(f"""
+            <div class="forecast-meta-row">
+                <div class="forecast-meta-box">
+                    <div class="forecast-meta-label">Forecast Horizon</div>
+                    <div class="forecast-meta-val">{series_test['Date'].min().strftime('%b %d')} – {series_test['Date'].max().strftime('%b %d, %Y')}</div>
+                </div>
+                <div class="forecast-meta-box">
+                    <div class="forecast-meta-label">Series Test WAPE (Error Rate)</div>
+                    <div class="forecast-meta-val" style="color: #4A6B50;">{test_wape:.2f}% <span style="font-size: 0.75rem; font-weight: 600; color: #4A6B50;">(High Precision)</span></div>
+                </div>
+                <div class="forecast-meta-box">
+                    <div class="forecast-meta-label">Series Mean Absolute Error (MAE)</div>
+                    <div class="forecast-meta-val">${test_mae:,.2f}</div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
             
             fig_fc = go.Figure()
             # Actual out-of-time demand
@@ -447,8 +552,8 @@ if df is not None:
                 y=series_test["Weekly_Sales"],
                 mode="lines+markers",
                 name="Actual Test Demand",
-                line=dict(color="#263238", width=2),
-                marker=dict(size=5, color="#263238"),
+                line=dict(color="#263238", width=2.2),
+                marker=dict(size=6, color="#263238"),
                 hovertemplate="<b>Actual:</b> $%{y:,.2f}<extra></extra>"
             ))
             # Model forecast
@@ -457,8 +562,8 @@ if df is not None:
                 y=series_test["Predicted_Sales"],
                 mode="lines+markers",
                 name=f"Champion Forecast ({champ_name})",
-                line=dict(color="#B85C38", width=2.2, dash="dash"),
-                marker=dict(size=6, symbol="square", color="#B85C38"),
+                line=dict(color="#B85C38", width=2.4, dash="dash"),
+                marker=dict(size=7, symbol="square", color="#B85C38"),
                 hovertemplate="<b>Forecast:</b> $%{y:,.2f}<extra></extra>"
             ))
             # Prediction interval
@@ -466,7 +571,7 @@ if df is not None:
                 x=list(series_test["Date"]) + list(series_test["Date"])[::-1],
                 y=list(upper_bound) + list(lower_bound)[::-1],
                 fill="toself",
-                fillcolor="rgba(184, 92, 56, 0.12)",
+                fillcolor="rgba(184, 92, 56, 0.14)",
                 line=dict(color="rgba(255,255,255,0)"),
                 name="95% Empirical Prediction Interval",
                 hoverinfo="skip"
@@ -475,12 +580,34 @@ if df is not None:
                 template="plotly_white",
                 paper_bgcolor="#FFFFFF",
                 plot_bgcolor="#FFFFFF",
-                height=340,
-                margin=dict(l=45, r=20, t=10, b=30),
+                height=360,
+                font=dict(family="Inter, sans-serif", color="#263238", size=12),
+                margin=dict(l=55, r=25, t=50, b=45),
                 hovermode="x unified",
-                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=11, color="#263238")),
-                xaxis=dict(title="", showgrid=True, gridcolor="#F2EFE9", linecolor="#E5DED3"),
-                yaxis=dict(title="Weekly Sales ($ USD)", showgrid=True, gridcolor="#F2EFE9", linecolor="#E5DED3", tickprefix="$", tickformat=",")
+                legend=dict(
+                    orientation="h",
+                    yanchor="bottom",
+                    y=1.06,
+                    xanchor="left",
+                    x=0,
+                    font=dict(size=11, color="#263238", family="Inter, sans-serif")
+                ),
+                xaxis=dict(
+                    title=dict(text="Test Horizon Week Date", font=dict(color="#263238", size=12)),
+                    tickfont=dict(color="#263238", size=11),
+                    showgrid=True,
+                    gridcolor="#EFEAE1",
+                    linecolor="#D5CCC0"
+                ),
+                yaxis=dict(
+                    title=dict(text="Weekly Sales ($ USD)", font=dict(color="#263238", size=12)),
+                    tickfont=dict(color="#263238", size=11),
+                    showgrid=True,
+                    gridcolor="#EFEAE1",
+                    linecolor="#D5CCC0",
+                    tickprefix="$",
+                    tickformat=","
+                )
             )
             st.plotly_chart(fig_fc, width="stretch", config=PLOTLY_CONFIG)
     except Exception as e:
@@ -501,7 +628,7 @@ if df is not None:
     # TAB 1: MODEL PERFORMANCE
     with tab_models:
         st.markdown('<div class="section-title">Model Evaluation & Champion Selection</div>', unsafe_allow_html=True)
-        st.markdown("<span style='font-size: 0.83rem; color: #687078;'>Rigorous 3-way chronological validation methodology: Models were trained on the 70% Train split and compared on the 15% Validation split. The production champion (XGBoost Regressor) was selected strictly on validation performance, then evaluated once on the untouched 15% out-of-time Test set.</span>", unsafe_allow_html=True)
+        st.markdown("<span style='font-size: 0.86rem; color: #4F5B61; line-height: 1.45;'>Rigorous 3-way chronological validation methodology: Models were trained on the 70% Train split and compared on the 15% Validation split. The production champion (XGBoost Regressor) was selected strictly on validation performance, then evaluated once on the untouched 15% out-of-time Test set.</span>", unsafe_allow_html=True)
         
         if val_metrics_df is not None and test_metrics_df is not None:
             col_m1, col_m2 = st.columns([5, 5])
@@ -538,16 +665,28 @@ if df is not None:
                 y="WAPE (%)",
                 color="WAPE (%)",
                 color_continuous_scale=["#B85C38", "#C39A3A", "#718B75", "#687078", "#9E7D23"],
-                title="Candidate Model Error Rate (WAPE % — Lower is Better)"
+                title="Candidate Model Error Rate on Validation Set (WAPE % — Lower is Better)"
             )
             fig_bar.update_layout(
                 template="plotly_white",
                 paper_bgcolor="#FFFFFF",
                 plot_bgcolor="#FFFFFF",
-                height=260,
-                margin=dict(l=35, r=15, t=35, b=35),
-                xaxis=dict(title="", tickangle=-15),
-                yaxis=dict(title="WAPE (%)", showgrid=True, gridcolor="#F2EFE9"),
+                height=280,
+                font=dict(family="Inter, sans-serif", color="#263238", size=12),
+                margin=dict(l=45, r=20, t=45, b=45),
+                xaxis=dict(
+                    title="",
+                    tickangle=-15,
+                    tickfont=dict(color="#263238", size=11),
+                    linecolor="#D5CCC0"
+                ),
+                yaxis=dict(
+                    title=dict(text="WAPE (%)", font=dict(color="#263238", size=12)),
+                    tickfont=dict(color="#263238", size=11),
+                    showgrid=True,
+                    gridcolor="#EFEAE1",
+                    linecolor="#D5CCC0"
+                ),
                 coloraxis_showscale=False
             )
             st.plotly_chart(fig_bar, width="stretch", config=PLOTLY_CONFIG)
@@ -555,7 +694,7 @@ if df is not None:
     # TAB 2: ERROR ANALYSIS
     with tab_error:
         st.markdown('<div class="section-title">Forecast Error Diagnostics & Segment Breakdown</div>', unsafe_allow_html=True)
-        st.markdown("<span style='font-size: 0.83rem; color: #687078;'>Sliced evaluation across merchandise departments on the out-of-time test set to diagnose segment vulnerability and residual variance.</span>", unsafe_allow_html=True)
+        st.markdown("<span style='font-size: 0.86rem; color: #4F5B61; line-height: 1.45;'>Sliced evaluation across merchandise departments on the out-of-time test set to diagnose segment vulnerability and residual variance.</span>", unsafe_allow_html=True)
         
         if dept_error_df is not None:
             ec1, ec2 = st.columns([5, 5])
@@ -604,16 +743,27 @@ if df is not None:
                     y=y_col,
                     color=y_col,
                     color_continuous_scale=["#718B75", "#C39A3A", "#B85C38"],
-                    title="Department Error Comparison (WAPE % — Lower is Better)"
+                    title="Department Error Rate (WAPE % — Lower is Better)"
                 )
                 fig_err_bar.update_layout(
                     template="plotly_white",
                     paper_bgcolor="#FFFFFF",
                     plot_bgcolor="#FFFFFF",
                     height=240,
-                    margin=dict(l=35, r=15, t=35, b=35),
-                    xaxis=dict(title=""),
-                    yaxis=dict(title="WAPE (%)", showgrid=True, gridcolor="#F2EFE9"),
+                    font=dict(family="Inter, sans-serif", color="#263238", size=12),
+                    margin=dict(l=45, r=20, t=40, b=40),
+                    xaxis=dict(
+                        title="",
+                        tickfont=dict(color="#263238", size=11),
+                        linecolor="#D5CCC0"
+                    ),
+                    yaxis=dict(
+                        title=dict(text="WAPE (%)", font=dict(color="#263238", size=12)),
+                        tickfont=dict(color="#263238", size=11),
+                        showgrid=True,
+                        gridcolor="#EFEAE1",
+                        linecolor="#D5CCC0"
+                    ),
                     coloraxis_showscale=False
                 )
                 st.plotly_chart(fig_err_bar, width="stretch", config=PLOTLY_CONFIG)
@@ -621,7 +771,7 @@ if df is not None:
     # TAB 3: DEMAND SIMULATOR
     with tab_sim:
         st.markdown('<div class="section-title">What-If Demand Simulator</div>', unsafe_allow_html=True)
-        st.markdown("<span style='font-size: 0.83rem; color: #687078;'>Simulate next-week store-department demand based on marketing campaign spend, markdown budget, and market growth.</span>", unsafe_allow_html=True)
+        st.markdown("<span style='font-size: 0.86rem; color: #4F5B61; line-height: 1.45;'>Simulate next-week store-department demand based on marketing campaign spend, markdown budget, and market growth.</span>", unsafe_allow_html=True)
         
         s1, s2 = st.columns(2)
         with s1:
@@ -669,24 +819,37 @@ if df is not None:
             text="Amount ($)",
             color="Component",
             color_discrete_sequence=["#B85C38", "#C39A3A", "#718B75", "#455A64", "#9E7D23"],
-            title="Projected Demand Contribution Breakdown"
+            title="Projected Demand Contribution Breakdown by Factor"
         )
-        fig_comp.update_traces(texttemplate="$%{text:,.0f}", textposition="outside")
+        fig_comp.update_traces(texttemplate="$%{text:,.0f}", textposition="outside", textfont=dict(color="#263238", size=11))
         fig_comp.update_layout(
             template="plotly_white",
             paper_bgcolor="#FFFFFF",
             plot_bgcolor="#FFFFFF",
-            height=270,
-            margin=dict(l=35, r=15, t=35, b=35),
+            height=280,
+            font=dict(family="Inter, sans-serif", color="#263238", size=12),
+            margin=dict(l=45, r=20, t=45, b=45),
             showlegend=False,
-            yaxis=dict(showgrid=True, gridcolor="#F2EFE9", tickprefix="$")
+            xaxis=dict(
+                title="",
+                tickfont=dict(color="#263238", size=11),
+                linecolor="#D5CCC0"
+            ),
+            yaxis=dict(
+                title=dict(text="Contribution ($ USD)", font=dict(color="#263238", size=12)),
+                tickfont=dict(color="#263238", size=11),
+                showgrid=True,
+                gridcolor="#EFEAE1",
+                linecolor="#D5CCC0",
+                tickprefix="$"
+            )
         )
         st.plotly_chart(fig_comp, width="stretch", config=PLOTLY_CONFIG)
 
     # TAB 4: INVENTORY PLANNING
     with tab_inv:
         st.markdown('<div class="section-title">Safety Stock & Reorder Point (ROP) Policy</div>', unsafe_allow_html=True)
-        st.markdown("<span style='font-size: 0.83rem; color: #687078;'>Operations research buffer calculation configured for a <b>95% Service Level Agreement (SLA)</b> ($Z_{0.95} = 1.645$) across supplier replenishment lead times.</span>", unsafe_allow_html=True)
+        st.markdown("<span style='font-size: 0.86rem; color: #4F5B61; line-height: 1.45;'>Operations research buffer calculation configured for a <b>95% Service Level Agreement (SLA)</b> ($Z_{0.95} = 1.645$) across supplier replenishment lead times.</span>", unsafe_allow_html=True)
         
         lead_time_w = st.slider("Supplier Replenishment Lead Time (Weeks)", min_value=1, max_value=6, value=2, step=1)
         
@@ -731,7 +894,8 @@ if df is not None:
             y=[cycle_req],
             marker_color="#B85C38",
             text=[f"${cycle_req:,.0f}"],
-            textposition="inside"
+            textposition="inside",
+            textfont=dict(color="#FFFFFF", size=11, family="Inter, sans-serif")
         ))
         fig_stack.add_trace(go.Bar(
             name="Safety Stock Buffer",
@@ -739,18 +903,39 @@ if df is not None:
             y=[ss_dollars],
             marker_color="#C39A3A",
             text=[f"${ss_dollars:,.0f}"],
-            textposition="inside"
+            textposition="inside",
+            textfont=dict(color="#263238", size=11, family="Inter, sans-serif")
         ))
         fig_stack.update_layout(
             barmode="stack",
             template="plotly_white",
             paper_bgcolor="#FFFFFF",
             plot_bgcolor="#FFFFFF",
-            height=250,
-            title=f"Inventory Reorder Composition (Lead Time = {lead_time_w} Weeks)",
-            margin=dict(l=35, r=15, t=35, b=35),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=11, color="#263238")),
-            yaxis=dict(showgrid=True, gridcolor="#F2EFE9", tickprefix="$", tickformat=",")
+            height=260,
+            font=dict(family="Inter, sans-serif", color="#263238", size=12),
+            title=dict(text=f"Inventory Reorder Composition (Lead Time = {lead_time_w} Weeks)", font=dict(color="#263238", size=12)),
+            margin=dict(l=45, r=20, t=50, b=40),
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.06,
+                xanchor="left",
+                x=0,
+                font=dict(size=11, color="#263238", family="Inter, sans-serif")
+            ),
+            xaxis=dict(
+                tickfont=dict(color="#263238", size=11),
+                linecolor="#D5CCC0"
+            ),
+            yaxis=dict(
+                title=dict(text="Inventory Value ($ USD)", font=dict(color="#263238", size=12)),
+                tickfont=dict(color="#263238", size=11),
+                showgrid=True,
+                gridcolor="#EFEAE1",
+                linecolor="#D5CCC0",
+                tickprefix="$",
+                tickformat=","
+            )
         )
         st.plotly_chart(fig_stack, width="stretch", config=PLOTLY_CONFIG)
 
@@ -758,11 +943,11 @@ if df is not None:
     with tab_insights:
         st.markdown('<div class="section-title">Strategic Demand Planning Insights</div>', unsafe_allow_html=True)
         st.markdown(f"""
-        <div style="background-color: #FFFFFF; border: 1px solid #E5DED3; border-radius: 6px; padding: 1.1rem; font-size: 0.86rem; line-height: 1.6; color: #263238;">
-            <b>1. Holiday Surge Vulnerability:</b> Historical data reveals a <b>+{holiday_lift_pct:.1f}%</b> demand surge during major holiday weeks (Thanksgiving/Black Friday and Christmas). Maintaining dynamic safety stock buffers 2 weeks prior to holiday events prevents stockouts.<br><br>
-            <b>2. Promotional Markdown Sensitivity:</b> Promotional campaigns yield an average <b>+{promo_lift_pct:.1f}%</b> sales lift in <b>{selected_dept}</b>. Aligning markdown budget with supplier lead times ensures replenishment before stock depletion.<br><br>
-            <b>3. Multi-Horizon Forecasting Accuracy:</b> The production champion (<b>XGBoost Regressor</b>) achieved a <b>4.55% WAPE</b> across out-of-time test horizons, outperforming naive lag baselines by <b>42.8%</b>.<br><br>
-            <b>4. Lead-Time Buffer Policy:</b> Under a 2-week supplier lead time, holding <b>${ss_dollars:,.0f}</b> in buffer inventory guarantees a <b>95% Service Level Agreement</b> against unexpected demand volatility.
+        <div style="background-color: #FFFFFF; border: 1.5px solid #E5DED3; border-radius: 6px; padding: 1.2rem; font-size: 0.88rem; line-height: 1.65; color: #263238;">
+            <b style="color: #B85C38;">1. Holiday Surge Vulnerability:</b> Historical data reveals a <b>+{holiday_lift_pct:.1f}%</b> demand surge during major holiday weeks (Thanksgiving/Black Friday and Christmas). Maintaining dynamic safety stock buffers 2 weeks prior to holiday events prevents stockouts.<br><br>
+            <b style="color: #B85C38;">2. Promotional Markdown Sensitivity:</b> Promotional campaigns yield an average <b>+{promo_lift_pct:.1f}%</b> sales lift in <b>{selected_dept}</b>. Aligning markdown budget with supplier lead times ensures replenishment before stock depletion.<br><br>
+            <b style="color: #B85C38;">3. Multi-Horizon Forecasting Accuracy:</b> The production champion (<b>XGBoost Regressor</b>) achieved a <b>4.55% WAPE</b> across out-of-time test horizons, outperforming naive lag baselines by <b>42.8%</b>.<br><br>
+            <b style="color: #B85C38;">4. Lead-Time Buffer Policy:</b> Under a 2-week supplier lead time, holding <b>${ss_dollars:,.0f}</b> in buffer inventory guarantees a <b>95% Service Level Agreement</b> against unexpected demand volatility.
         </div>
         """, unsafe_allow_html=True)
 
