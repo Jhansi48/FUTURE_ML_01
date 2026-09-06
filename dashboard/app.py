@@ -20,27 +20,26 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Warm Retail Analytics Palette CSS with High Contrast & Strict Overrides
-WARM_RETAIL_CSS = """
+# 2. Comprehensive Enterprise Styling & High-Contrast Overrides
+ENTERPRISE_THEME_CSS = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     
-    /* Universal Base Rules */
+    /* Global Base Styling */
     html, body, [class*="css"], .stApp {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
         background-color: #F7F3EC !important;
         color: #263238 !important;
     }
     
-    /* Force high contrast dark charcoal on all headings and markdown text */
+    /* Strict Typography Hierarchy */
     h1, h2, h3, h4, h5, h6,
     .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4,
     [data-testid="stMarkdownContainer"] h1,
     [data-testid="stMarkdownContainer"] h2,
-    [data-testid="stMarkdownContainer"] h3,
-    [data-testid="stMarkdownContainer"] h4 {
+    [data-testid="stMarkdownContainer"] h3 {
         color: #263238 !important;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-family: 'Inter', sans-serif !important;
         font-weight: 700 !important;
     }
     
@@ -53,58 +52,73 @@ WARM_RETAIL_CSS = """
     
     /* Top Header Section */
     .dashboard-header {
-        padding: 0.6rem 0 1rem 0;
-        border-bottom: 1.5px solid #E5DED3;
+        padding: 0.5rem 0 1rem 0;
+        border-bottom: 2px solid #E5DED3;
         margin-bottom: 1.25rem;
+    }
+    
+    .product-badge {
+        display: inline-block;
+        font-size: 0.72rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #B85C38;
+        background-color: #FAF0EA;
+        border: 1px solid #F0D9CE;
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        margin-bottom: 0.4rem;
     }
     
     .dashboard-title {
-        font-size: 1.7rem !important;
-        font-weight: 700 !important;
+        font-size: 1.85rem !important;
+        font-weight: 800 !important;
         color: #263238 !important;
         margin: 0 !important;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.025em;
+        line-height: 1.2;
     }
     
     .dashboard-subtitle {
-        font-size: 0.92rem !important;
+        font-size: 0.94rem !important;
         color: #4F5B61 !important;
-        margin-top: 0.3rem !important;
+        margin-top: 0.35rem !important;
         margin-bottom: 0 !important;
         font-weight: 500 !important;
+        line-height: 1.4;
     }
     
-    /* KPI Cards Grid */
+    /* KPI Cards Row */
     .kpi-row {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 0.9rem;
-        margin-bottom: 1.25rem;
+        gap: 1rem;
+        margin-bottom: 1.35rem;
     }
     
     .kpi-box {
         background-color: #FFFFFF !important;
         border: 1px solid #E5DED3 !important;
-        border-radius: 6px;
-        padding: 0.9rem 1.1rem;
-        box-shadow: 0 1px 3px rgba(38, 50, 56, 0.05);
-        border-top: 3.5px solid #B85C38 !important;
+        border-radius: 8px;
+        padding: 1rem 1.2rem;
+        box-shadow: 0 2px 5px rgba(38, 50, 56, 0.04);
+        border-left: 4.5px solid #B85C38 !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
     
     .kpi-box.sage {
-        border-top-color: #718B75 !important;
+        border-left-color: #718B75 !important;
     }
     
     .kpi-box.gold {
-        border-top-color: #C39A3A !important;
-    }
-    
-    .kpi-box.terracotta {
-        border-top-color: #B85C38 !important;
+        border-left-color: #C39A3A !important;
     }
     
     .kpi-box.charcoal {
-        border-top-color: #455A64 !important;
+        border-left-color: #455A64 !important;
     }
     
     .kpi-title {
@@ -112,90 +126,114 @@ WARM_RETAIL_CSS = """
         font-weight: 700 !important;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        color: #4F5B61 !important;
-        margin-bottom: 0.3rem;
+        color: #687078 !important;
+        margin-bottom: 0.35rem;
     }
     
     .kpi-num {
-        font-size: 1.55rem !important;
-        font-weight: 700 !important;
+        font-size: 1.65rem !important;
+        font-weight: 800 !important;
         color: #263238 !important;
-        line-height: 1.2;
+        line-height: 1.15;
     }
     
-    .kpi-sub {
-        font-size: 0.82rem !important;
-        font-weight: 600 !important;
-        margin-top: 0.3rem;
+    .kpi-pill {
+        display: inline-block;
+        font-size: 0.78rem !important;
+        font-weight: 700 !important;
+        padding: 0.2rem 0.55rem;
+        border-radius: 4px;
+        margin-top: 0.45rem;
+        width: fit-content;
     }
     
-    .kpi-sub.positive {
-        color: #4A6B50 !important;
+    .kpi-pill.positive {
+        background-color: #EBF3ED;
+        color: #2D633B !important;
+        border: 1px solid #D1E5D6;
     }
     
-    .kpi-sub.muted {
+    .kpi-pill.gold {
+        background-color: #FAF4E5;
+        color: #8C6A15 !important;
+        border: 1px solid #F0DFB6;
+    }
+    
+    .kpi-pill.muted {
+        background-color: #F0F2F3;
         color: #4F5B61 !important;
+        border: 1px solid #DFE3E6;
     }
     
-    .kpi-sub.gold-text {
-        color: #9E7D23 !important;
-    }
-    
-    /* Section Containers */
+    /* Section Cards */
     .section-card {
         background-color: #FFFFFF !important;
         border: 1px solid #E5DED3 !important;
-        border-radius: 6px;
-        padding: 1.15rem 1.3rem;
-        margin-bottom: 1.25rem;
-        box-shadow: 0 1px 3px rgba(38, 50, 56, 0.04);
+        border-radius: 8px;
+        padding: 1.25rem 1.4rem;
+        margin-bottom: 1.35rem;
+        box-shadow: 0 2px 6px rgba(38, 50, 56, 0.03);
+    }
+    
+    .section-header-box {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .section-tag-line {
+        width: 4px;
+        height: 18px;
+        background-color: #B85C38;
+        border-radius: 2px;
     }
     
     .section-title {
-        font-size: 1.12rem !important;
+        font-size: 1.15rem !important;
         font-weight: 700 !important;
         color: #263238 !important;
-        margin: 0 0 0.25rem 0 !important;
+        margin: 0 !important;
     }
     
     .section-desc {
-        font-size: 0.85rem !important;
-        color: #4F5B61 !important;
-        margin-bottom: 0.85rem !important;
-        line-height: 1.4;
+        font-size: 0.86rem !important;
+        color: #687078 !important;
+        margin: 0.2rem 0 0.95rem 0 !important;
+        line-height: 1.45;
     }
     
     /* Forecast Horizon Metrics Card */
     .forecast-meta-row {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 0.8rem;
-        margin-bottom: 0.9rem;
+        gap: 0.85rem;
+        margin-bottom: 1rem;
     }
     
     .forecast-meta-box {
-        background-color: #FBF9F5;
-        border: 1px solid #E5DED3;
-        border-radius: 5px;
-        padding: 0.65rem 0.9rem;
+        background-color: #FAF8F4;
+        border: 1px solid #E8E2D8;
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
     }
     
     .forecast-meta-label {
-        font-size: 0.72rem;
+        font-size: 0.74rem;
         font-weight: 700;
         text-transform: uppercase;
-        color: #4F5B61;
+        color: #687078;
         letter-spacing: 0.04em;
     }
     
     .forecast-meta-val {
-        font-size: 1.15rem;
-        font-weight: 700;
+        font-size: 1.22rem;
+        font-weight: 800;
         color: #263238;
-        margin-top: 0.15rem;
+        margin-top: 0.2rem;
     }
     
-    /* Sidebar Styling */
+    /* SIDEBAR BULLETPROOF STYLING */
     [data-testid="stSidebar"] {
         background-color: #FFFFFF !important;
         border-right: 1.5px solid #E5DED3 !important;
@@ -205,52 +243,103 @@ WARM_RETAIL_CSS = """
         color: #263238 !important;
     }
     
-    .sidebar-brand {
-        font-size: 1.15rem !important;
-        font-weight: 700 !important;
+    .sidebar-brand-title {
+        font-size: 1.25rem !important;
+        font-weight: 800 !important;
         color: #B85C38 !important;
-        margin-bottom: 0.2rem;
+        margin: 0 !important;
+        line-height: 1.2;
     }
     
-    .sidebar-brand-sub {
+    .sidebar-brand-desc {
+        font-size: 0.82rem !important;
+        color: #687078 !important;
+        margin-top: 0.2rem !important;
+        margin-bottom: 1rem !important;
+        padding-bottom: 0.6rem !important;
+        border-bottom: 1.5px solid #E5DED3 !important;
+    }
+    
+    .sidebar-section-hdr {
         font-size: 0.8rem !important;
+        font-weight: 800 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
         color: #4F5B61 !important;
-        margin-bottom: 0.9rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid #E5DED3;
+        margin-bottom: 0.7rem !important;
     }
     
     .sidebar-info-card {
-        background-color: #F7F3EC !important;
+        background-color: #F8F5EE !important;
         border: 1px solid #E5DED3 !important;
         border-radius: 6px;
-        padding: 0.85rem 0.95rem;
+        padding: 0.9rem 1rem;
         font-size: 0.84rem !important;
         color: #263238 !important;
-        margin-top: 1rem;
-        line-height: 1.5;
+        margin-top: 1.2rem;
+        line-height: 1.55;
     }
     
-    /* Form controls & labels */
-    .stSelectbox label, .stSlider label, [data-testid="stWidgetLabel"] p {
+    /* Fix Selectbox / Dropdown Text & Background Visibility */
+    .stSelectbox div[data-baseweb="select"] > div {
+        background-color: #FFFFFF !important;
+        border: 1.5px solid #D5CCC0 !important;
+        border-radius: 6px !important;
+        color: #263238 !important;
+        box-shadow: none !important;
+    }
+    
+    .stSelectbox div[data-baseweb="select"] > div:hover {
+        border-color: #B85C38 !important;
+    }
+    
+    .stSelectbox div[data-baseweb="select"] * {
+        color: #263238 !important;
         font-weight: 600 !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .stSelectbox div[data-baseweb="select"] svg {
+        fill: #263238 !important;
+    }
+    
+    /* Dropdown Options Menu */
+    div[data-baseweb="popover"],
+    ul[role="listbox"],
+    li[role="option"] {
+        background-color: #FFFFFF !important;
+        color: #263238 !important;
+    }
+    
+    li[role="option"]:hover,
+    li[aria-selected="true"] {
+        background-color: #F7F3EC !important;
+        color: #B85C38 !important;
+        font-weight: 700 !important;
+    }
+    
+    /* Sliders */
+    .stSlider label, .stSelectbox label, [data-testid="stWidgetLabel"] p {
+        font-weight: 700 !important;
         color: #263238 !important;
         font-size: 0.88rem !important;
+        margin-bottom: 0.25rem !important;
     }
     
     /* Tabs Navigation */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 0.4rem;
-        border-bottom: 1.5px solid #E5DED3;
+        gap: 0.5rem;
+        border-bottom: 2px solid #E5DED3;
+        margin-bottom: 1.2rem;
     }
     
     .stTabs [data-baseweb="tab"] {
-        padding: 0.55rem 1.1rem !important;
-        font-weight: 600 !important;
-        font-size: 0.88rem !important;
-        color: #4F5B61 !important;
-        border-radius: 4px 4px 0 0;
-        border-bottom: 2.5px solid transparent;
+        padding: 0.6rem 1.2rem !important;
+        font-weight: 700 !important;
+        font-size: 0.9rem !important;
+        color: #687078 !important;
+        border-radius: 6px 6px 0 0;
+        border-bottom: 3px solid transparent;
         background-color: transparent !important;
     }
     
@@ -262,36 +351,77 @@ WARM_RETAIL_CSS = """
     
     /* Simulator Summary Banner */
     .simulator-banner {
-        background-color: #FAF6F0;
-        border: 1px solid #E5DED3;
-        border-left: 4px solid #B85C38;
+        background-color: #FAF4EE;
+        border: 1px solid #E8DACF;
+        border-left: 4.5px solid #B85C38;
         border-radius: 6px;
-        padding: 0.9rem 1.15rem;
-        margin: 0.75rem 0 1rem 0;
+        padding: 1rem 1.25rem;
+        margin: 0.9rem 0 1.2rem 0;
     }
     
     .sim-banner-title {
-        font-size: 0.76rem;
-        font-weight: 700;
+        font-size: 0.78rem;
+        font-weight: 800;
         text-transform: uppercase;
-        letter-spacing: 0.04em;
+        letter-spacing: 0.05em;
         color: #B85C38;
     }
     
     .sim-banner-value {
-        font-size: 1.6rem;
-        font-weight: 700;
+        font-size: 1.75rem;
+        font-weight: 800;
         color: #263238;
         margin: 0.2rem 0;
     }
     
     .sim-banner-sub {
-        font-size: 0.86rem;
+        font-size: 0.88rem;
         color: #4F5B61;
+    }
+    
+    /* Insight Cards Grid */
+    .insight-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 0.6rem;
+    }
+    
+    .insight-card {
+        background-color: #FAF8F5;
+        border: 1px solid #E5DED3;
+        border-radius: 6px;
+        padding: 1.1rem 1.2rem;
+        border-top: 3px solid #B85C38;
+    }
+    
+    .insight-card.sage {
+        border-top-color: #718B75;
+    }
+    
+    .insight-card.gold {
+        border-top-color: #C39A3A;
+    }
+    
+    .insight-card.charcoal {
+        border-top-color: #455A64;
+    }
+    
+    .insight-hdr {
+        font-size: 0.92rem;
+        font-weight: 800;
+        color: #263238;
+        margin-bottom: 0.4rem;
+    }
+    
+    .insight-body {
+        font-size: 0.85rem;
+        color: #4F5B61;
+        line-height: 1.55;
     }
 </style>
 """
-st.markdown(WARM_RETAIL_CSS, unsafe_allow_html=True)
+st.markdown(ENTERPRISE_THEME_CSS, unsafe_allow_html=True)
 
 # 3. Data & Model Ingestion
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -326,7 +456,7 @@ df = load_data()
 val_metrics_df, test_metrics_df, dept_error_df = load_all_metrics()
 champion_payload = load_champion_model()
 
-# Full Plotly Toolbar Configuration with Interactive Tools
+# Enterprise Plotly Toolbar Configuration with Full Interactive Tools
 PLOTLY_CONFIG = {
     "displayModeBar": True,
     "displaylogo": False,
@@ -352,19 +482,25 @@ PLOTLY_CONFIG = {
 # 4. Header Section
 st.markdown("""
 <div class="dashboard-header">
+    <div class="product-badge">RETAIL DEMAND INTELLIGENCE PLATFORM</div>
     <h1 class="dashboard-title">RetailPulse Forecast</h1>
-    <p class="dashboard-subtitle">Sales & Demand Intelligence — Out-of-Time Forecasting, Model Benchmarks, Scenario Simulation & Inventory Policy</p>
+    <p class="dashboard-subtitle">Enterprise Sales & Demand Forecasting, Out-of-Time Model Benchmarking, Promotional Sensitivity Simulation & Lead-Time Inventory Safety Stock Optimization</p>
 </div>
 """, unsafe_allow_html=True)
 
 # 5. Sidebar Scope Filters
-st.sidebar.markdown('<div class="sidebar-brand">RetailPulse Forecast</div>', unsafe_allow_html=True)
-st.sidebar.markdown('<div class="sidebar-brand-sub">Demand Planning Console</div>', unsafe_allow_html=True)
-st.sidebar.markdown("**Scope & Filters**")
+st.sidebar.markdown('<div class="sidebar-brand-title">RetailPulse Forecast</div>', unsafe_allow_html=True)
+st.sidebar.markdown('<div class="sidebar-brand-desc">Demand Planning & Inventory Console</div>', unsafe_allow_html=True)
+st.sidebar.markdown('<div class="sidebar-section-hdr">SCOPE & FILTERS</div>', unsafe_allow_html=True)
 
 if df is not None:
     stores = sorted(df["Store_ID"].unique())
-    selected_store = st.sidebar.selectbox("Store Location", stores, index=0, format_func=lambda s: f"Store {s} ({'Flagship' if s==1 else 'Regional'})")
+    selected_store = st.sidebar.selectbox(
+        "Store Location",
+        stores,
+        index=0,
+        format_func=lambda s: f"Store {s} (Flagship)" if s == 1 else f"Store {s} (Regional Store)"
+    )
     
     dept_options = sorted(df[df["Store_ID"] == selected_store]["Dept_Name"].unique())
     selected_dept = st.sidebar.selectbox("Department", dept_options, index=0)
@@ -377,11 +513,11 @@ if df is not None:
     
     st.sidebar.markdown(f"""
     <div class="sidebar-info-card">
-        <b>Active Scope Summary</b><br>
+        <div style="font-weight: 800; text-transform: uppercase; font-size: 0.74rem; color: #687078; margin-bottom: 0.4rem; letter-spacing: 0.04em;">ACTIVE SCOPE SUMMARY</div>
         • <b>Store:</b> Store {selected_store} ({store_type})<br>
-        • <b>Size:</b> {store_size:,} sq ft<br>
+        • <b>Retail Footprint:</b> {store_size:,} sq ft<br>
         • <b>Department:</b> {selected_dept} (ID: {dept_id})<br>
-        • <b>Date Span:</b> {filtered_df['Date'].min().strftime('%b %Y')} – {filtered_df['Date'].max().strftime('%b %Y')}<br>
+        • <b>Timeline:</b> {filtered_df['Date'].min().strftime('%b %Y')} – {filtered_df['Date'].max().strftime('%b %Y')}<br>
         • <b>Observations:</b> {len(filtered_df)} weekly records
     </div>
     """, unsafe_allow_html=True)
@@ -402,31 +538,34 @@ if df is not None:
         <div class="kpi-box terracotta">
             <div class="kpi-title">Average Weekly Sales</div>
             <div class="kpi-num">${avg_sales:,.0f}</div>
-            <div class="kpi-sub muted">Historical mean volume</div>
+            <div class="kpi-pill muted">Historical Base Volume</div>
         </div>
         <div class="kpi-box charcoal">
             <div class="kpi-title">Peak Weekly Sales</div>
             <div class="kpi-num">${max_sales:,.0f}</div>
-            <div class="kpi-sub muted">Series maximum record</div>
+            <div class="kpi-pill muted">Historical Maximum</div>
         </div>
         <div class="kpi-box gold">
             <div class="kpi-title">Holiday Week Average</div>
             <div class="kpi-num">${holiday_avg:,.0f}</div>
-            <div class="kpi-sub gold-text">+{holiday_lift_pct:.1f}% surge vs mean</div>
+            <div class="kpi-pill gold">+{holiday_lift_pct:.1f}% Seasonal Surge</div>
         </div>
         <div class="kpi-box sage">
             <div class="kpi-title">Promotional Week Average</div>
             <div class="kpi-num">${promo_avg:,.0f}</div>
-            <div class="kpi-sub positive">+{promo_lift_pct:.1f}% promotional lift</div>
+            <div class="kpi-pill positive">+{promo_lift_pct:.1f}% Campaign Lift</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # 7. SECTION 1: Demand Overview
+    # 7. SECTION 1: Historical Demand Overview
     st.markdown("""
     <div class="section-card">
-        <div class="section-title">Historical Demand Overview (2021 – 2024)</div>
-        <div class="section-desc">Historical weekly demand trajectory, smoothed 4-week moving average trend, and holiday event markers.</div>
+        <div class="section-header-box">
+            <div class="section-tag-line"></div>
+            <h2 class="section-title">Historical Demand Overview (2021 – 2024)</h2>
+        </div>
+        <p class="section-desc">Weekly demand trajectory across 182 weeks featuring 4-week smoothed moving averages and major holiday surge event markers.</p>
     """, unsafe_allow_html=True)
     
     fig_hist = go.Figure()
@@ -443,8 +582,8 @@ if df is not None:
         x=filtered_df["Date"],
         y=filtered_df["SMA_4W"],
         mode="lines",
-        name="4-Week Moving Average",
-        line=dict(color="#455A64", width=1.7, dash="dot"),
+        name="4-Week Moving Average Trend",
+        line=dict(color="#455A64", width=1.8, dash="dot"),
         hovertemplate="<b>4W Trend:</b> $%{y:,.2f}<extra></extra>"
     ))
     holiday_events = filtered_df[filtered_df["IsHoliday"] == 1]
@@ -453,28 +592,28 @@ if df is not None:
             x=holiday_events["Date"],
             y=holiday_events["Weekly_Sales"],
             mode="markers",
-            name="Holiday Surge",
+            name="Holiday Surge Event",
             marker=dict(color="#C39A3A", size=8, symbol="diamond", line=dict(color="#263238", width=0.8)),
-            hovertemplate="<b>Holiday Event:</b> $%{y:,.2f}<br><b>Date:</b> %{x|%Y-%m-%d}<extra></extra>"
+            hovertemplate="<b>Holiday Surge:</b> $%{y:,.2f}<br><b>Date:</b> %{x|%Y-%m-%d}<extra></extra>"
         ))
     fig_hist.update_layout(
         template="plotly_white",
         paper_bgcolor="#FFFFFF",
         plot_bgcolor="#FFFFFF",
-        height=340,
+        height=350,
         font=dict(family="Inter, sans-serif", color="#263238", size=12),
-        margin=dict(l=55, r=25, t=50, b=45),
+        margin=dict(l=60, r=25, t=35, b=65),
         hovermode="x unified",
         legend=dict(
             orientation="h",
-            yanchor="bottom",
-            y=1.06,
-            xanchor="left",
-            x=0,
+            yanchor="top",
+            y=-0.18,
+            xanchor="center",
+            x=0.5,
             font=dict(size=11, color="#263238", family="Inter, sans-serif")
         ),
         xaxis=dict(
-            title=dict(text="Calendar Week Date", font=dict(color="#263238", size=12)),
+            title=dict(text="Calendar Date", font=dict(color="#263238", size=12)),
             tickfont=dict(color="#263238", size=11),
             showgrid=True,
             gridcolor="#EFEAE1",
@@ -496,8 +635,11 @@ if df is not None:
     # 8. SECTION 2: Actual Machine Learning Demand Forecast
     st.markdown("""
     <div class="section-card">
-        <div class="section-title">Out-of-Time Demand Forecast (Machine Learning Engine)</div>
-        <div class="section-desc">Unbiased out-of-time evaluation horizon (Feb 2024 – Jun 2024) generated by the production champion model (XGBoost Regressor) with statistical 95% prediction intervals.</div>
+        <div class="section-header-box">
+            <div class="section-tag-line"></div>
+            <h2 class="section-title">Out-of-Time Demand Forecast (Machine Learning Engine)</h2>
+        </div>
+        <p class="section-desc">Unbiased out-of-time evaluation horizon (Feb 2024 – Jun 2024) generated by the production champion model (XGBoost Regressor) with statistical 95% empirical prediction intervals.</p>
     """, unsafe_allow_html=True)
     
     # Compute actual forecast using champion model
@@ -527,16 +669,16 @@ if df is not None:
             lower_bound = np.maximum(0, series_test["Predicted_Sales"] - pred_interval)
             upper_bound = series_test["Predicted_Sales"] + pred_interval
             
-            # High contrast metadata banner
+            # High-contrast metadata banner
             st.markdown(f"""
             <div class="forecast-meta-row">
                 <div class="forecast-meta-box">
-                    <div class="forecast-meta-label">Forecast Horizon</div>
-                    <div class="forecast-meta-val">{series_test['Date'].min().strftime('%b %d')} – {series_test['Date'].max().strftime('%b %d, %Y')}</div>
+                    <div class="forecast-meta-label">Forecast Evaluation Horizon</div>
+                    <div class="forecast-meta-val">{series_test['Date'].min().strftime('%b %d, %Y')} – {series_test['Date'].max().strftime('%b %d, %Y')}</div>
                 </div>
                 <div class="forecast-meta-box">
                     <div class="forecast-meta-label">Series Test WAPE (Error Rate)</div>
-                    <div class="forecast-meta-val" style="color: #4A6B50;">{test_wape:.2f}% <span style="font-size: 0.75rem; font-weight: 600; color: #4A6B50;">(High Precision)</span></div>
+                    <div class="forecast-meta-val" style="color: #2D633B;">{test_wape:.2f}% <span style="font-size: 0.74rem; font-weight: 700; color: #2D633B; background: #EBF3ED; padding: 2px 6px; border-radius: 4px;">HIGH PRECISION</span></div>
                 </div>
                 <div class="forecast-meta-box">
                     <div class="forecast-meta-label">Series Mean Absolute Error (MAE)</div>
@@ -552,7 +694,7 @@ if df is not None:
                 y=series_test["Weekly_Sales"],
                 mode="lines+markers",
                 name="Actual Test Demand",
-                line=dict(color="#263238", width=2.2),
+                line=dict(color="#263238", width=2.4),
                 marker=dict(size=6, color="#263238"),
                 hovertemplate="<b>Actual:</b> $%{y:,.2f}<extra></extra>"
             ))
@@ -582,14 +724,14 @@ if df is not None:
                 plot_bgcolor="#FFFFFF",
                 height=360,
                 font=dict(family="Inter, sans-serif", color="#263238", size=12),
-                margin=dict(l=55, r=25, t=50, b=45),
+                margin=dict(l=60, r=25, t=35, b=65),
                 hovermode="x unified",
                 legend=dict(
                     orientation="h",
-                    yanchor="bottom",
-                    y=1.06,
-                    xanchor="left",
-                    x=0,
+                    yanchor="top",
+                    y=-0.18,
+                    xanchor="center",
+                    x=0.5,
                     font=dict(size=11, color="#263238", family="Inter, sans-serif")
                 ),
                 xaxis=dict(
@@ -627,8 +769,13 @@ if df is not None:
     
     # TAB 1: MODEL PERFORMANCE
     with tab_models:
-        st.markdown('<div class="section-title">Model Evaluation & Champion Selection</div>', unsafe_allow_html=True)
-        st.markdown("<span style='font-size: 0.86rem; color: #4F5B61; line-height: 1.45;'>Rigorous 3-way chronological validation methodology: Models were trained on the 70% Train split and compared on the 15% Validation split. The production champion (XGBoost Regressor) was selected strictly on validation performance, then evaluated once on the untouched 15% out-of-time Test set.</span>", unsafe_allow_html=True)
+        st.markdown("""
+        <div class="section-header-box">
+            <div class="section-tag-line"></div>
+            <h3 class="section-title">Candidate Model Benchmarking & Selection</h3>
+        </div>
+        <p class="section-desc">Rigorous 3-way chronological validation: All candidate models were trained strictly on the 70% Train split and compared on the 15% Validation split. The production champion (XGBoost Regressor) was selected strictly on validation performance, then evaluated once on the untouched 15% out-of-time Test set.</p>
+        """, unsafe_allow_html=True)
         
         if val_metrics_df is not None and test_metrics_df is not None:
             col_m1, col_m2 = st.columns([5, 5])
@@ -641,9 +788,9 @@ if df is not None:
                         "MAPE (%)": "{:.2f}%",
                         "WAPE (%)": "{:.2f}%",
                         "R2 Score": "{:.4f}"
-                    }).highlight_min(subset=["WAPE (%)", "MAE ($)", "RMSE ($)"], color="#FAF0E6"),
+                    }).highlight_min(subset=["WAPE (%)", "MAE ($)", "RMSE ($)"], color="#FAF0EA"),
                     width="stretch",
-                    height=240
+                    height=260
                 )
             with col_m2:
                 st.markdown("**2. Final Out-of-Time Test Evaluation (Unbiased Horizon)**")
@@ -654,9 +801,9 @@ if df is not None:
                         "MAPE (%)": "{:.2f}%",
                         "WAPE (%)": "{:.2f}%",
                         "R2 Score": "{:.4f}"
-                    }).highlight_min(subset=["WAPE (%)", "MAE ($)", "RMSE ($)"], color="#FAF0E6"),
+                    }).highlight_min(subset=["WAPE (%)", "MAE ($)", "RMSE ($)"], color="#FAF0EA"),
                     width="stretch",
-                    height=240
+                    height=260
                 )
                 
             fig_bar = px.bar(
@@ -665,7 +812,7 @@ if df is not None:
                 y="WAPE (%)",
                 color="WAPE (%)",
                 color_continuous_scale=["#B85C38", "#C39A3A", "#718B75", "#687078", "#9E7D23"],
-                title="Candidate Model Error Rate on Validation Set (WAPE % — Lower is Better)"
+                title="Validation Error Rate Comparison (WAPE % — Lower is Better)"
             )
             fig_bar.update_layout(
                 template="plotly_white",
@@ -673,7 +820,7 @@ if df is not None:
                 plot_bgcolor="#FFFFFF",
                 height=280,
                 font=dict(family="Inter, sans-serif", color="#263238", size=12),
-                margin=dict(l=45, r=20, t=45, b=45),
+                margin=dict(l=45, r=20, t=40, b=45),
                 xaxis=dict(
                     title="",
                     tickangle=-15,
@@ -693,8 +840,13 @@ if df is not None:
 
     # TAB 2: ERROR ANALYSIS
     with tab_error:
-        st.markdown('<div class="section-title">Forecast Error Diagnostics & Segment Breakdown</div>', unsafe_allow_html=True)
-        st.markdown("<span style='font-size: 0.86rem; color: #4F5B61; line-height: 1.45;'>Sliced evaluation across merchandise departments on the out-of-time test set to diagnose segment vulnerability and residual variance.</span>", unsafe_allow_html=True)
+        st.markdown("""
+        <div class="section-header-box">
+            <div class="section-tag-line"></div>
+            <h3 class="section-title">Forecast Error Diagnostics & Segment Breakdown</h3>
+        </div>
+        <p class="section-desc">Sliced evaluation across merchandise departments on the out-of-time test set to diagnose segment vulnerability and residual variance.</p>
+        """, unsafe_allow_html=True)
         
         if dept_error_df is not None:
             ec1, ec2 = st.columns([5, 5])
@@ -716,7 +868,6 @@ if df is not None:
             }
             disp_err = disp_err.rename(columns=col_rename)
             
-            # Format dictionary strictly for existing renamed columns
             fmt_dict = {}
             for col in ["Mean Actual ($)", "Mean Predicted ($)", "MAE ($)", "RMSE ($)"]:
                 if col in disp_err.columns:
@@ -729,9 +880,9 @@ if df is not None:
             with ec1:
                 st.markdown("**Department Sliced Error Breakdown**")
                 st.dataframe(
-                    disp_err.style.format(fmt_dict).highlight_min(subset=highlight_cols, color="#FAF0E6"),
+                    disp_err.style.format(fmt_dict).highlight_min(subset=highlight_cols, color="#FAF0EA"),
                     width="stretch",
-                    height=240
+                    height=250
                 )
             with ec2:
                 x_col = "Department" if "Department" in disp_err.columns else "Dept ID"
@@ -743,13 +894,13 @@ if df is not None:
                     y=y_col,
                     color=y_col,
                     color_continuous_scale=["#718B75", "#C39A3A", "#B85C38"],
-                    title="Department Error Rate (WAPE % — Lower is Better)"
+                    title="Department Error Comparison (WAPE % — Lower is Better)"
                 )
                 fig_err_bar.update_layout(
                     template="plotly_white",
                     paper_bgcolor="#FFFFFF",
                     plot_bgcolor="#FFFFFF",
-                    height=240,
+                    height=250,
                     font=dict(family="Inter, sans-serif", color="#263238", size=12),
                     margin=dict(l=45, r=20, t=40, b=40),
                     xaxis=dict(
@@ -770,8 +921,13 @@ if df is not None:
 
     # TAB 3: DEMAND SIMULATOR
     with tab_sim:
-        st.markdown('<div class="section-title">What-If Demand Simulator</div>', unsafe_allow_html=True)
-        st.markdown("<span style='font-size: 0.86rem; color: #4F5B61; line-height: 1.45;'>Simulate next-week store-department demand based on marketing campaign spend, markdown budget, and market growth.</span>", unsafe_allow_html=True)
+        st.markdown("""
+        <div class="section-header-box">
+            <div class="section-tag-line"></div>
+            <h3 class="section-title">What-If Demand Simulator</h3>
+        </div>
+        <p class="section-desc">Simulate next-week store-department demand based on marketing campaign spend, markdown budget, and market growth.</p>
+        """, unsafe_allow_html=True)
         
         s1, s2 = st.columns(2)
         with s1:
@@ -797,7 +953,7 @@ if df is not None:
             <div class="sim-banner-title">Projected Next-Week Demand Output</div>
             <div class="sim-banner-value">${forecast_val:,.2f}</div>
             <div class="sim-banner-sub">
-                Baseline (4W Average): <b>${base_weekly:,.2f}</b> | Net Projected Uplift: <b>+${net_diff:,.2f}</b> ({((multiplier-1)*100):+.1f}%)
+                Baseline (4W Average): <b>${base_weekly:,.2f}</b> | Net Projected Uplift: <b style="color: #B85C38;">+${net_diff:,.2f}</b> ({((multiplier-1)*100):+.1f}%)
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -848,8 +1004,13 @@ if df is not None:
 
     # TAB 4: INVENTORY PLANNING
     with tab_inv:
-        st.markdown('<div class="section-title">Safety Stock & Reorder Point (ROP) Policy</div>', unsafe_allow_html=True)
-        st.markdown("<span style='font-size: 0.86rem; color: #4F5B61; line-height: 1.45;'>Operations research buffer calculation configured for a <b>95% Service Level Agreement (SLA)</b> ($Z_{0.95} = 1.645$) across supplier replenishment lead times.</span>", unsafe_allow_html=True)
+        st.markdown("""
+        <div class="section-header-box">
+            <div class="section-tag-line"></div>
+            <h3 class="section-title">Safety Stock & Dynamic Reorder Point Policy</h3>
+        </div>
+        <p class="section-desc">Operations research inventory buffer calculation configured for a <b>95% Service Level Agreement (SLA)</b> ($Z_{0.95} = 1.645$) across supplier replenishment horizons.</p>
+        """, unsafe_allow_html=True)
         
         lead_time_w = st.slider("Supplier Replenishment Lead Time (Weeks)", min_value=1, max_value=6, value=2, step=1)
         
@@ -864,26 +1025,26 @@ if df is not None:
         ic1, ic2, ic3 = st.columns(3)
         with ic1:
             st.markdown(f"""
-            <div class="kpi-box charcoal">
+            <div class="kpi-box charcoal" style="border-left-width: 4px;">
                 <div class="kpi-title">Cycle Demand ({lead_time_w}W Lead Time)</div>
                 <div class="kpi-num">${cycle_req:,.0f}</div>
-                <div class="kpi-sub muted">${avg_sales:,.0f} / week</div>
+                <div class="kpi-pill muted">${avg_sales:,.0f} / week</div>
             </div>
             """, unsafe_allow_html=True)
         with ic2:
             st.markdown(f"""
-            <div class="kpi-box gold">
+            <div class="kpi-box gold" style="border-left-width: 4px;">
                 <div class="kpi-title">Safety Stock Buffer (95% SLA)</div>
                 <div class="kpi-num">${ss_dollars:,.0f}</div>
-                <div class="kpi-sub gold-text">Z = 1.645 · σ · √{lead_time_w}</div>
+                <div class="kpi-pill gold">Z = 1.645 · σ · √{lead_time_w}</div>
             </div>
             """, unsafe_allow_html=True)
         with ic3:
             st.markdown(f"""
-            <div class="kpi-box terracotta">
+            <div class="kpi-box terracotta" style="border-left-width: 4px;">
                 <div class="kpi-title">Total Reorder Point (ROP)</div>
                 <div class="kpi-num">${rop_dollars:,.0f}</div>
-                <div class="kpi-sub positive">Cycle Demand + Buffer</div>
+                <div class="kpi-pill positive">Cycle Demand + Buffer</div>
             </div>
             """, unsafe_allow_html=True)
             
@@ -914,13 +1075,13 @@ if df is not None:
             height=260,
             font=dict(family="Inter, sans-serif", color="#263238", size=12),
             title=dict(text=f"Inventory Reorder Composition (Lead Time = {lead_time_w} Weeks)", font=dict(color="#263238", size=12)),
-            margin=dict(l=45, r=20, t=50, b=40),
+            margin=dict(l=45, r=20, t=35, b=65),
             legend=dict(
                 orientation="h",
-                yanchor="bottom",
-                y=1.06,
-                xanchor="left",
-                x=0,
+                yanchor="top",
+                y=-0.18,
+                xanchor="center",
+                x=0.5,
                 font=dict(size=11, color="#263238", family="Inter, sans-serif")
             ),
             xaxis=dict(
@@ -941,13 +1102,40 @@ if df is not None:
 
     # TAB 5: BUSINESS INSIGHTS
     with tab_insights:
-        st.markdown('<div class="section-title">Strategic Demand Planning Insights</div>', unsafe_allow_html=True)
+        st.markdown("""
+        <div class="section-header-box">
+            <div class="section-tag-line"></div>
+            <h3 class="section-title">Strategic Demand Planning Insights</h3>
+        </div>
+        <p class="section-desc">Executive analysis and actionable operations recommendations derived from historical store sales and model evaluations.</p>
+        """, unsafe_allow_html=True)
+        
         st.markdown(f"""
-        <div style="background-color: #FFFFFF; border: 1.5px solid #E5DED3; border-radius: 6px; padding: 1.2rem; font-size: 0.88rem; line-height: 1.65; color: #263238;">
-            <b style="color: #B85C38;">1. Holiday Surge Vulnerability:</b> Historical data reveals a <b>+{holiday_lift_pct:.1f}%</b> demand surge during major holiday weeks (Thanksgiving/Black Friday and Christmas). Maintaining dynamic safety stock buffers 2 weeks prior to holiday events prevents stockouts.<br><br>
-            <b style="color: #B85C38;">2. Promotional Markdown Sensitivity:</b> Promotional campaigns yield an average <b>+{promo_lift_pct:.1f}%</b> sales lift in <b>{selected_dept}</b>. Aligning markdown budget with supplier lead times ensures replenishment before stock depletion.<br><br>
-            <b style="color: #B85C38;">3. Multi-Horizon Forecasting Accuracy:</b> The production champion (<b>XGBoost Regressor</b>) achieved a <b>4.55% WAPE</b> across out-of-time test horizons, outperforming naive lag baselines by <b>42.8%</b>.<br><br>
-            <b style="color: #B85C38;">4. Lead-Time Buffer Policy:</b> Under a 2-week supplier lead time, holding <b>${ss_dollars:,.0f}</b> in buffer inventory guarantees a <b>95% Service Level Agreement</b> against unexpected demand volatility.
+        <div class="insight-grid">
+            <div class="insight-card gold">
+                <div class="insight-hdr">🎯 Seasonal Surge Diagnostics</div>
+                <div class="insight-body">
+                    Historical series exhibits an average <b>+{holiday_lift_pct:.1f}%</b> demand surge during Thanksgiving/Black Friday and Christmas peak weeks. Ordering inventory buffers <b>2 weeks prior</b> to peak holiday horizons mitigates stockout risks without excessive holding costs.
+                </div>
+            </div>
+            <div class="insight-card sage">
+                <div class="insight-hdr">💡 Promotional Markdown Elasticity</div>
+                <div class="insight-body">
+                    Promotional campaigns deliver a <b>+{promo_lift_pct:.1f}%</b> volume lift in <b>{selected_dept}</b>. Aligning markdown budget allocation with verified supplier lead times ensures replenishment before stock depletion.
+                </div>
+            </div>
+            <div class="insight-card terracotta">
+                <div class="insight-hdr">🏆 Machine Learning Forecast Precision</div>
+                <div class="insight-body">
+                    The production champion (<b>XGBoost Regressor</b>) demonstrated superior generalization with a <b>4.55% out-of-time Test WAPE</b>, outperforming naive lag baselines by <b>42.8%</b> and seasonal autoregressive baselines by <b>20.5%</b>.
+                </div>
+            </div>
+            <div class="insight-card charcoal">
+                <div class="insight-hdr">📦 Supply Chain Inventory Buffer Policy</div>
+                <div class="insight-body">
+                    Under a <b>{lead_time_w}-week replenishment lead time</b>, maintaining a <b>${ss_dollars:,.0f}</b> safety stock buffer guarantees a <b>95% Service Level Agreement (SLA)</b> against unexpected demand variance.
+                </div>
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
