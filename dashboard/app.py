@@ -573,13 +573,16 @@ EDITORIAL_STUDIO_CSS = """
     }
 
     /* ------------------------------------------------------------- */
-    /* Sidebar Forecast Horizon Equal-Sized Radio Option Boxes       */
-    /* Exactly Equal Width & Height, No Clipping or Overflow         */
+    /* Sidebar Forecast Horizon Rectangular Button Cards             */
+    /* Equal Dimensions, Hidden Indicators, No Clipping/Truncation   */
     /* ------------------------------------------------------------- */
     [data-testid="stSidebar"] [aria-label="Horizon"],
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"],
+    [data-testid="stSidebar"] div[role="radiogroup"][aria-label="Horizon"],
     [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"],
     [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"],
-    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] {
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [data-testid="stRadioGroup"],
+    [data-testid="stSidebar"] div.stRadio:last-of-type [data-testid="stRadioGroup"] {
         display: flex !important;
         flex-direction: column !important;
         width: 100% !important;
@@ -588,13 +591,16 @@ EDITORIAL_STUDIO_CSS = """
         padding: 0 !important;
         margin: 0 !important;
         box-sizing: border-box !important;
-        overflow: hidden !important;
     }
 
+    /* All 4 Rectangular Selectable Button Surfaces */
     [data-testid="stSidebar"] [aria-label="Horizon"] label,
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label,
+    [data-testid="stSidebar"] div[role="radiogroup"][aria-label="Horizon"] label,
     [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label,
     [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label,
-    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label {
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [data-testid="stRadioGroup"] label,
+    [data-testid="stSidebar"] div.stRadio:last-of-type [data-testid="stRadioGroup"] label {
         display: flex !important;
         align-items: center !important;
         justify-content: flex-start !important;
@@ -610,25 +616,73 @@ EDITORIAL_STUDIO_CSS = """
         border: 1.5px solid #E5DED3 !important;
         border-radius: 6px !important;
         font-weight: 600 !important;
-        font-size: 0.86rem !important;
+        font-size: 0.84rem !important;
         color: #4A2F2F !important;
-        transition: all 0.15s ease !important;
+        transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
         cursor: pointer !important;
+        position: relative !important;
         overflow: hidden !important;
+        user-select: none !important;
     }
 
+    /* COMPLETE REMOVAL OF VISIBLE RADIO CIRCLE INDICATORS */
+    [data-testid="stSidebar"] [aria-label="Horizon"] label > div:first-of-type,
+    [data-testid="stSidebar"] [aria-label="Horizon"] label > div:first-child,
+    [data-testid="stSidebar"] [aria-label="Horizon"] label > div:not(:has([data-testid="stMarkdownContainer"])),
+    [data-testid="stSidebar"] [aria-label="Horizon"] label input[type="radio"] + div,
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label > div:first-of-type,
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label > div:first-child,
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label > div:not(:has([data-testid="stMarkdownContainer"])),
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label > div:first-of-type,
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label > div:first-child,
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label > div:not(:has([data-testid="stMarkdownContainer"])),
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label > div:first-of-type,
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label > div:first-child,
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label > div:not(:has([data-testid="stMarkdownContainer"])) {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        max-width: 0 !important;
+        max-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+
+    /* Ensure accessible native radio input remains accessible without taking space */
+    [data-testid="stSidebar"] [aria-label="Horizon"] label input[type="radio"],
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label input[type="radio"],
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label input[type="radio"],
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label input[type="radio"] {
+        position: absolute !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        pointer-events: none !important;
+        clip: rect(0, 0, 0, 0) !important;
+    }
+
+    /* Hover state across all 4 option boxes */
     [data-testid="stSidebar"] [aria-label="Horizon"] label:hover,
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label:hover,
     [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label:hover,
-    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label:hover,
-    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label:hover {
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label:hover {
         border-color: #B85C38 !important;
         background-color: #FAF4EE !important;
     }
 
+    /* Selected state across all 4 option boxes - dimensions remain strictly identical */
     [data-testid="stSidebar"] [aria-label="Horizon"] label:has(input:checked),
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label:has(input:checked),
     [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label:has(input:checked),
-    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label:has(input:checked),
-    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label:has(input:checked) {
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label:has(input:checked) {
         background-color: #FAF0EA !important;
         border: 1.5px solid #B85C38 !important;
         color: #B85C38 !important;
@@ -639,39 +693,74 @@ EDITORIAL_STUDIO_CSS = """
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
+        padding: 0 0.85rem !important;
     }
 
     [data-testid="stSidebar"] [aria-label="Horizon"] label:has(input:checked) *,
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label:has(input:checked) *,
     [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label:has(input:checked) *,
-    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label:has(input:checked) *,
-    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label:has(input:checked) * {
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label:has(input:checked) * {
         color: #B85C38 !important;
         font-weight: 700 !important;
     }
 
-    [data-testid="stSidebar"] [aria-label="Horizon"] label > div,
-    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label > div,
-    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label > div,
-    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label > div {
-        display: flex !important;
-        align-items: center !important;
+    /* Keyboard focus state */
+    [data-testid="stSidebar"] [aria-label="Horizon"] label:has(input:focus-visible),
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label:has(input:focus-visible),
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label:has(input:focus-visible),
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label:has(input:focus-visible) {
+        outline: 2px solid #B85C38 !important;
+        outline-offset: 1px !important;
     }
 
-    [data-testid="stSidebar"] [aria-label="Horizon"] label p,
-    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label p,
-    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label p,
-    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label p,
-    [data-testid="stSidebar"] [aria-label="Horizon"] label span,
-    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label span,
-    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label span,
-    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label span {
+    /* Label text container - reset BaseWeb padding and vertically center */
+    [data-testid="stSidebar"] [aria-label="Horizon"] label > div:has([data-testid="stMarkdownContainer"]),
+    [data-testid="stSidebar"] [aria-label="Horizon"] label > div:last-of-type,
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label > div:has([data-testid="stMarkdownContainer"]),
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label > div:last-of-type,
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label > div:has([data-testid="stMarkdownContainer"]),
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label > div:last-of-type,
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label > div:has([data-testid="stMarkdownContainer"]),
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label > div:last-of-type {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        top: 0 !important;
+        position: static !important;
+    }
+
+    [data-testid="stSidebar"] [aria-label="Horizon"] label div[data-testid="stMarkdownContainer"],
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label div[data-testid="stMarkdownContainer"],
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label div[data-testid="stMarkdownContainer"],
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label div[data-testid="stMarkdownContainer"] {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
-        font-size: 0.85rem !important;
-        line-height: 1 !important;
+    }
+
+    /* Option Typography: Centered vertically, readable, no ellipsis, no truncation */
+    [data-testid="stSidebar"] [aria-label="Horizon"] label p,
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label p,
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label p,
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label p,
+    [data-testid="stSidebar"] [aria-label="Horizon"] label span,
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label span,
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label span,
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label span {
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 0.84rem !important;
+        font-weight: inherit !important;
+        line-height: 1.2 !important;
         white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
         color: inherit !important;
     }
 
