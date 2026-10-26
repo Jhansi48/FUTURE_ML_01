@@ -574,8 +574,10 @@ EDITORIAL_STUDIO_CSS = """
 
     /* ------------------------------------------------------------- */
     /* Sidebar Forecast Horizon Rectangular Button Cards             */
-    /* Equal Dimensions, Hidden Indicators, No Clipping/Truncation   */
+    /* Equal Dimensions, Hidden Indicators, Visible Labels           */
     /* ------------------------------------------------------------- */
+    [data-testid="stSidebar"] div[data-testid="stElementContainer"]:has([aria-label="Horizon"]),
+    [data-testid="stSidebar"] div.stRadio:has([aria-label="Horizon"]),
     [data-testid="stSidebar"] [aria-label="Horizon"],
     [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"],
     [data-testid="stSidebar"] div[role="radiogroup"][aria-label="Horizon"],
@@ -586,6 +588,7 @@ EDITORIAL_STUDIO_CSS = """
         display: flex !important;
         flex-direction: column !important;
         width: 100% !important;
+        min-width: 100% !important;
         max-width: 100% !important;
         gap: 0.45rem !important;
         padding: 0 !important;
@@ -605,6 +608,7 @@ EDITORIAL_STUDIO_CSS = """
         align-items: center !important;
         justify-content: flex-start !important;
         width: 100% !important;
+        min-width: 100% !important;
         max-width: 100% !important;
         height: 42px !important;
         min-height: 42px !important;
@@ -626,19 +630,12 @@ EDITORIAL_STUDIO_CSS = """
     }
 
     /* COMPLETE REMOVAL OF VISIBLE RADIO CIRCLE INDICATORS */
-    [data-testid="stSidebar"] [aria-label="Horizon"] label > div:first-of-type,
+    /* Target strictly the first child div (the radio circle mark) */
     [data-testid="stSidebar"] [aria-label="Horizon"] label > div:first-child,
-    [data-testid="stSidebar"] [aria-label="Horizon"] label > div:not(:has([data-testid="stMarkdownContainer"])),
-    [data-testid="stSidebar"] [aria-label="Horizon"] label input[type="radio"] + div,
-    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label > div:first-of-type,
     [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label > div:first-child,
-    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label > div:not(:has([data-testid="stMarkdownContainer"])),
-    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label > div:first-of-type,
+    [data-testid="stSidebar"] div[role="radiogroup"][aria-label="Horizon"] label > div:first-child,
     [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label > div:first-child,
-    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label > div:not(:has([data-testid="stMarkdownContainer"])),
-    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label > div:first-of-type,
-    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label > div:first-child,
-    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label > div:not(:has([data-testid="stMarkdownContainer"])) {
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label > div:first-child {
         display: none !important;
         width: 0 !important;
         height: 0 !important;
@@ -691,6 +688,7 @@ EDITORIAL_STUDIO_CSS = """
         min-height: 42px !important;
         max-height: 42px !important;
         width: 100% !important;
+        min-width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
         padding: 0 0.85rem !important;
@@ -713,27 +711,29 @@ EDITORIAL_STUDIO_CSS = """
         outline-offset: 1px !important;
     }
 
-    /* Label text container - reset BaseWeb padding and vertically center */
-    [data-testid="stSidebar"] [aria-label="Horizon"] label > div:has([data-testid="stMarkdownContainer"]),
-    [data-testid="stSidebar"] [aria-label="Horizon"] label > div:last-of-type,
-    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label > div:has([data-testid="stMarkdownContainer"]),
-    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label > div:last-of-type,
-    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label > div:has([data-testid="stMarkdownContainer"]),
-    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label > div:last-of-type,
-    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label > div:has([data-testid="stMarkdownContainer"]),
-    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label > div:last-of-type {
+    /* Label text container - MUST BE VISIBLE and vertically centered */
+    [data-testid="stSidebar"] [aria-label="Horizon"] label > div:last-child,
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label > div:last-child,
+    [data-testid="stSidebar"] div[role="radiogroup"][aria-label="Horizon"] label > div:last-child,
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label > div:last-child,
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label > div:last-child {
         display: flex !important;
         align-items: center !important;
         justify-content: flex-start !important;
         width: 100% !important;
+        height: 100% !important;
         padding: 0 !important;
         margin: 0 !important;
         top: 0 !important;
         position: static !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
     }
 
     [data-testid="stSidebar"] [aria-label="Horizon"] label div[data-testid="stMarkdownContainer"],
     [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label div[data-testid="stMarkdownContainer"],
+    [data-testid="stSidebar"] div[role="radiogroup"][aria-label="Horizon"] label div[data-testid="stMarkdownContainer"],
     [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label div[data-testid="stMarkdownContainer"],
     [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label div[data-testid="stMarkdownContainer"] {
         display: flex !important;
@@ -742,15 +742,19 @@ EDITORIAL_STUDIO_CSS = """
         width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 
-    /* Option Typography: Centered vertically, readable, no ellipsis, no truncation */
+    /* Option Typography: Centered vertically, fully readable, no ellipsis, no truncation */
     [data-testid="stSidebar"] [aria-label="Horizon"] label p,
     [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label p,
+    [data-testid="stSidebar"] div[role="radiogroup"][aria-label="Horizon"] label p,
     [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label p,
     [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label p,
     [data-testid="stSidebar"] [aria-label="Horizon"] label span,
     [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label span,
+    [data-testid="stSidebar"] div[role="radiogroup"][aria-label="Horizon"] label span,
     [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label span,
     [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label span {
         margin: 0 !important;
@@ -762,6 +766,9 @@ EDITORIAL_STUDIO_CSS = """
         overflow: visible !important;
         text-overflow: clip !important;
         color: inherit !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        display: block !important;
     }
 
     /* ------------------------------------------------------------- */
