@@ -368,82 +368,144 @@ EDITORIAL_STUDIO_CSS = """
         line-height: 1.55;
     }
     
-    /* Selectboxes and Inputs */
-    .stSelectbox div[data-baseweb="select"] > div {
+    /* ------------------------------------------------------------- */
+    /* Selectboxes & Dropdowns (Active Scope & Global Inputs)        */
+    /* Enforces Warm Surface #FFFCF7 and Dark Cocoa #4A2F2F          */
+    /* ------------------------------------------------------------- */
+    [data-testid="stSelectbox"],
+    .stSelectbox,
+    div[data-baseweb="select"],
+    div[data-baseweb="select"] > div,
+    div[data-baseweb="select"] > div:focus,
+    div[data-baseweb="select"] > div:focus-within,
+    div[data-baseweb="select"] > div:active {
+        background-color: #FFFCF7 !important;
+        border-color: #DDD6CA !important;
+        color: #4A2F2F !important;
+    }
+
+    div[data-baseweb="select"] > div {
         background-color: #FFFCF7 !important;
         border: 1.5px solid #DDD6CA !important;
         border-radius: 6px !important;
         color: #4A2F2F !important;
         box-shadow: none !important;
+        min-height: 42px !important;
+        height: 42px !important;
+        display: flex !important;
+        align-items: center !important;
+        cursor: pointer !important;
     }
     
-    .stSelectbox div[data-baseweb="select"] > div:hover {
+    div[data-baseweb="select"] > div:hover,
+    div[data-baseweb="select"] > div:focus,
+    div[data-baseweb="select"] > div:focus-within {
         border-color: #B85C38 !important;
+        background-color: #FFFCF7 !important;
+        box-shadow: 0 0 0 1px #B85C38 !important;
     }
-    
-    .stSelectbox div[data-baseweb="select"] * {
+
+    div[data-baseweb="select"] *,
+    div[data-baseweb="select"] span,
+    div[data-baseweb="select"] input,
+    div[data-baseweb="select"] div {
         color: #4A2F2F !important;
-        font-weight: 600 !important;
+        background-color: transparent !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-size: 0.88rem !important;
+        font-weight: 600 !important;
     }
 
-    .stSelectbox div[data-baseweb="select"] svg {
+    div[data-baseweb="select"] svg {
         fill: #4A2F2F !important;
+        color: #4A2F2F !important;
     }
 
-    /* BaseWeb Dropdown Menus & Popover Options (Fixes Black Dropdown Popup) */
+    /* BaseWeb Dropdown Menus, Popover & Virtualized Option List */
     div[data-baseweb="popover"],
     div[data-baseweb="popover"] > div,
+    [data-testid="stSelectboxVirtualDropdown"],
+    [data-testid="stSelectboxVirtualDropdown"] > div,
+    [data-testid="stSelectboxVirtualDropdown"] div,
     div[data-baseweb="menu"],
     ul[data-baseweb="menu"],
     ul[role="listbox"],
     div[role="listbox"] {
         background-color: #FFFCF7 !important;
+        border-color: #DDD6CA !important;
+        color: #4A2F2F !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+    }
+
+    div[data-baseweb="popover"] > div,
+    [data-testid="stSelectboxVirtualDropdown"] {
         border: 1.5px solid #DDD6CA !important;
         border-radius: 6px !important;
         box-shadow: 0 4px 16px rgba(74, 47, 47, 0.12) !important;
-        color: #4A2F2F !important;
+        overflow: hidden !important;
     }
 
     li[role="option"],
     div[role="option"],
     ul[data-baseweb="menu"] li,
-    div[data-baseweb="menu"] div {
+    div[data-baseweb="menu"] div,
+    [data-testid="stSelectboxVirtualDropdown"] li,
+    [data-testid="stSelectboxVirtualDropdown"] div[role="option"] {
         background-color: #FFFCF7 !important;
         color: #4A2F2F !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-size: 0.88rem !important;
         font-weight: 600 !important;
         border-bottom: 1px solid #F5EFE6 !important;
+        min-height: 38px !important;
+        display: flex !important;
+        align-items: center !important;
+        padding-left: 0.85rem !important;
+        padding-right: 0.85rem !important;
         transition: background-color 0.15s ease, color 0.15s ease !important;
+        cursor: pointer !important;
     }
 
     li[role="option"] *,
     div[role="option"] *,
     ul[data-baseweb="menu"] li *,
-    div[data-baseweb="menu"] div * {
+    div[data-baseweb="menu"] div *,
+    [data-testid="stSelectboxVirtualDropdown"] * {
         color: #4A2F2F !important;
         background-color: transparent !important;
     }
 
-    /* Hover State */
+    /* Hover & Focused option state */
     li[role="option"]:hover,
     div[role="option"]:hover,
-    ul[data-baseweb="menu"] li:hover {
+    ul[data-baseweb="menu"] li:hover,
+    [data-testid="stSelectboxVirtualDropdown"] li:hover,
+    [data-testid="stSelectboxVirtualDropdown"] div[role="option"]:hover,
+    li[data-highlighted="true"],
+    div[data-highlighted="true"],
+    [data-testid="stSelectboxVirtualDropdown"] [data-highlighted="true"] {
         background-color: #FAF0EA !important;
         color: #B85C38 !important;
     }
 
     li[role="option"]:hover *,
     div[role="option"]:hover *,
-    ul[data-baseweb="menu"] li:hover * {
+    ul[data-baseweb="menu"] li:hover *,
+    [data-testid="stSelectboxVirtualDropdown"] li:hover *,
+    [data-testid="stSelectboxVirtualDropdown"] div[role="option"]:hover *,
+    li[data-highlighted="true"] *,
+    div[data-highlighted="true"] *,
+    [data-testid="stSelectboxVirtualDropdown"] [data-highlighted="true"] * {
         color: #B85C38 !important;
     }
 
-    /* Selected / Active State */
+    /* Selected / Active option state */
     li[role="option"][aria-selected="true"],
     div[role="option"][aria-selected="true"],
-    ul[data-baseweb="menu"] li[aria-selected="true"] {
+    ul[data-baseweb="menu"] li[aria-selected="true"],
+    [data-testid="stSelectboxVirtualDropdown"] li[aria-selected="true"],
+    [data-testid="stSelectboxVirtualDropdown"] div[role="option"][aria-selected="true"],
+    [data-testid="stSelectboxVirtualDropdown"] [aria-selected="true"] {
         background-color: #FAF0EA !important;
         color: #B85C38 !important;
         font-weight: 700 !important;
@@ -452,7 +514,10 @@ EDITORIAL_STUDIO_CSS = """
 
     li[role="option"][aria-selected="true"] *,
     div[role="option"][aria-selected="true"] *,
-    ul[data-baseweb="menu"] li[aria-selected="true"] * {
+    ul[data-baseweb="menu"] li[aria-selected="true"] *,
+    [data-testid="stSelectboxVirtualDropdown"] li[aria-selected="true"] *,
+    [data-testid="stSelectboxVirtualDropdown"] div[role="option"][aria-selected="true"] *,
+    [data-testid="stSelectboxVirtualDropdown"] [aria-selected="true"] * {
         color: #B85C38 !important;
         font-weight: 700 !important;
     }
@@ -472,7 +537,7 @@ EDITORIAL_STUDIO_CSS = """
     
     [data-testid="stSidebar"] .stRadio [role="radiogroup"] label {
         background-color: #FFFCF7 !important;
-        border: 1px solid #E5DED3 !important;
+        border: 1.5px solid #E5DED3 !important;
         border-radius: 6px !important;
         padding: 0.45rem 0.85rem !important;
         font-weight: 600 !important;
@@ -509,20 +574,32 @@ EDITORIAL_STUDIO_CSS = """
 
     /* ------------------------------------------------------------- */
     /* Sidebar Forecast Horizon Equal-Sized Radio Option Boxes       */
+    /* Exactly Equal Width & Height, No Clipping or Overflow         */
     /* ------------------------------------------------------------- */
-    [data-testid="stSidebar"] div[role="radiogroup"][aria-label="Horizon"],
-    [data-testid="stSidebar"] div[role="radiogroup"]:has(input[value*="20-Week"]) {
+    [data-testid="stSidebar"] [aria-label="Horizon"],
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"],
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"],
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] {
         display: flex !important;
         flex-direction: column !important;
         width: 100% !important;
+        max-width: 100% !important;
         gap: 0.45rem !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
     }
 
-    [data-testid="stSidebar"] div[role="radiogroup"][aria-label="Horizon"] label,
-    [data-testid="stSidebar"] div[role="radiogroup"]:has(input[value*="20-Week"]) label {
+    [data-testid="stSidebar"] [aria-label="Horizon"] label,
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label,
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label,
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label {
         display: flex !important;
         align-items: center !important;
+        justify-content: flex-start !important;
         width: 100% !important;
+        max-width: 100% !important;
         height: 42px !important;
         min-height: 42px !important;
         max-height: 42px !important;
@@ -535,38 +612,67 @@ EDITORIAL_STUDIO_CSS = """
         font-weight: 600 !important;
         font-size: 0.86rem !important;
         color: #4A2F2F !important;
-        transition: all 0.2s ease !important;
+        transition: all 0.15s ease !important;
         cursor: pointer !important;
+        overflow: hidden !important;
     }
 
-    [data-testid="stSidebar"] div[role="radiogroup"][aria-label="Horizon"] label:hover,
-    [data-testid="stSidebar"] div[role="radiogroup"]:has(input[value*="20-Week"]) label:hover {
+    [data-testid="stSidebar"] [aria-label="Horizon"] label:hover,
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label:hover,
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label:hover,
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label:hover {
         border-color: #B85C38 !important;
         background-color: #FAF4EE !important;
     }
 
-    [data-testid="stSidebar"] div[role="radiogroup"][aria-label="Horizon"] label:has(input:checked),
-    [data-testid="stSidebar"] div[role="radiogroup"]:has(input[value*="20-Week"]) label:has(input:checked) {
+    [data-testid="stSidebar"] [aria-label="Horizon"] label:has(input:checked),
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label:has(input:checked),
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label:has(input:checked),
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label:has(input:checked) {
         background-color: #FAF0EA !important;
         border: 1.5px solid #B85C38 !important;
         color: #B85C38 !important;
         font-weight: 700 !important;
+        height: 42px !important;
+        min-height: 42px !important;
+        max-height: 42px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
-    [data-testid="stSidebar"] div[role="radiogroup"][aria-label="Horizon"] label:has(input:checked) *,
-    [data-testid="stSidebar"] div[role="radiogroup"]:has(input[value*="20-Week"]) label:has(input:checked) * {
+    [data-testid="stSidebar"] [aria-label="Horizon"] label:has(input:checked) *,
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label:has(input:checked) *,
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label:has(input:checked) *,
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label:has(input:checked) * {
         color: #B85C38 !important;
         font-weight: 700 !important;
     }
 
-    [data-testid="stSidebar"] div[role="radiogroup"][aria-label="Horizon"] label p,
-    [data-testid="stSidebar"] div[role="radiogroup"]:has(input[value*="20-Week"]) label p,
-    [data-testid="stSidebar"] div[role="radiogroup"][aria-label="Horizon"] label span,
-    [data-testid="stSidebar"] div[role="radiogroup"]:has(input[value*="20-Week"]) label span {
+    [data-testid="stSidebar"] [aria-label="Horizon"] label > div,
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label > div,
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label > div,
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label > div {
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    [data-testid="stSidebar"] [aria-label="Horizon"] label p,
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label p,
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label p,
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label p,
+    [data-testid="stSidebar"] [aria-label="Horizon"] label span,
+    [data-testid="stSidebar"] div.stRadio:nth-of-type(2) [role="radiogroup"] label span,
+    [data-testid="stSidebar"] div.stRadio:last-of-type [role="radiogroup"] label span,
+    [data-testid="stSidebar"] div[data-testid="stRadioGroup"][aria-label="Horizon"] label span {
         margin: 0 !important;
+        padding: 0 !important;
+        font-size: 0.85rem !important;
+        line-height: 1 !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
+        color: inherit !important;
     }
 
     /* ------------------------------------------------------------- */
