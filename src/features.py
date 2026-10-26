@@ -1,4 +1,4 @@
-﻿"""
+"""
 RetailPulse Forecast - Time-Based Feature Engineering Module
 Creates chronological lag features, rolling window aggregates, holiday proximity,
 and cyclical calendar encodings without look-ahead bias.
@@ -87,11 +87,16 @@ def create_lag_and_rolling_features(
 
 def prepare_feature_matrix(df: pd.DataFrame) -> Tuple[pd.DataFrame, List[str]]:
     """Full feature engineering pipeline and column selection."""
+    if df is None or df.empty:
+        return pd.DataFrame(), []
+        
     df_feat = create_time_features(df)
     df_feat = create_lag_and_rolling_features(df_feat)
     
-    # Categorical encoding (Store Type and Dept Name)
-    df_feat = pd.get_dummies(df_feat, columns=["Store_Type", "Dept_Name"], drop_first=True)
+    # Categorical encoding (Store Type and Dept Name) with explicit integer dtype
+    cat_cols = [c for c in ["Store_Type", "Dept_Name"] if c in df_feat.columns]
+    if cat_cols:
+        df_feat = pd.get_dummies(df_feat, columns=cat_cols, drop_first=True, dtype=int)
     
     # Drop initial rows where annual lags (52 weeks) are NaN to ensure robust training data
     df_clean = df_feat.dropna().reset_index(drop=True)

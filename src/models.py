@@ -1,4 +1,4 @@
-﻿"""
+"""
 RetailPulse Forecast - Forecasting Models & Chronological Validation
 Includes Naive baselines, Ridge Regression, Random Forest, LightGBM, and XGBoost.
 """
@@ -92,12 +92,20 @@ def chronological_split(
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
     Performs chronological train/validation/test split without future data leakage.
+    Ensures strict temporal ordering: max(train_dates) < min(val_dates) < min(test_dates).
     """
+    if df is None or df.empty:
+        return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
+
     unique_dates = sorted(df["Date"].unique())
     n_dates = len(unique_dates)
     
-    train_end_idx = int(n_dates * train_ratio)
-    val_end_idx = int(n_dates * (train_ratio + val_ratio))
+    if n_dates < 3:
+        raise ValueError(f"Insufficient distinct dates for 3-way chronological split: found {n_dates} dates")
+    
+    train_end_idx = max(1, int(n_dates * train_ratio))
+    val_end_idx = max(train_end_idx + 1, int(n_dates * (train_ratio + val_ratio)))
+    val_end_idx = min(val_end_idx, n_dates - 1)  # ensure at least 1 date for test set
     
     train_dates = unique_dates[:train_end_idx]
     val_dates = unique_dates[train_end_idx:val_end_idx]
